@@ -20,9 +20,9 @@ import org.springframework.web.client.RestTemplate;
  * @since 1.0
  */
 @Configuration
-@ComponentScan("org.abigballofmud.flink.client")
+@ComponentScan("com.github.codingdebugallday.client")
 @MapperScan({
-        "org.abigballofmud.flink.client.**.mapper"
+        "com.github.codingdebugallday.client.**.mapper"
 })
 public class FlinkApiAutoConfiguration {
 
