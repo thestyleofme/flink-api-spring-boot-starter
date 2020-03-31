@@ -21,7 +21,6 @@ public final class RestTemplateUtil {
      * 封装请求头
      *
      * @return org.springframework.http.HttpHeaders
-     * @author abigballofmud 2019/11/25 11:10
      */
     public static HttpHeaders applicationJsonHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -33,7 +32,6 @@ public final class RestTemplateUtil {
      * 封装请求头
      *
      * @return org.springframework.http.HttpHeaders
-     * @author abigballofmud 2019/11/25 11:10
      */
     public static HttpHeaders applicationMultiDataHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();
