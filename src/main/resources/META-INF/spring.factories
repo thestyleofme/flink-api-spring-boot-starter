@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.abigballofmud.flink.client.infra.autoconfigure.FlinkApiAutoConfiguration,\
+org.abigballofmud.flink.client.infra.autoconfigure.GlobalExceptionHandlerAutoConfiguration,\
+org.abigballofmud.flink.client.infra.autoconfigure.MybatisPlusConfig
