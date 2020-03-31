@@ -26,6 +26,35 @@
         <lombok.version>1.18.12</lombok.version>
     </properties>
 
+    <name>flink-api-spring-boot-starter</name>
+    <url>https://github.com/codingdebugallday/flink-api-spring-boot-starter</url>
+    <description>flink api for spring boot</description>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/codingdebugallday/flink-api-spring-boot-starter</url>
+        <connection>https://github.com/codingdebugallday/flink-api-spring-boot-starter.git</connection>
+        <developerConnection>https://github.com/codingdebugallday/flink-api-spring-boot-starter.git</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>abigballofmud</name>
+            <email>codingdebugallday@163.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>

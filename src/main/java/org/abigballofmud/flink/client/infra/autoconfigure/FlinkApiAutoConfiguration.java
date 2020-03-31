@@ -1,5 +1,6 @@
 package org.abigballofmud.flink.client.infra.autoconfigure;
 
+import org.abigballofmud.flink.client.domain.repository.ClusterRepository;
 import org.abigballofmud.flink.client.infra.context.FlinkApiContext;
 import org.abigballofmud.flink.client.infra.exceptions.RestTemplateErrorHandler;
 import org.mybatis.spring.annotation.MapperScan;
@@ -26,7 +27,7 @@ import org.springframework.web.client.RestTemplate;
 public class FlinkApiAutoConfiguration {
 
     @Bean
-    public FlinkApiContext flinkApiContext(RestTemplate restTemplate) {
+    public FlinkApiContext flinkApiContext(RestTemplate restTemplate, ClusterRepository clusterRepository) {
         return new FlinkApiContext(restTemplate, clusterRepository);
     }
 

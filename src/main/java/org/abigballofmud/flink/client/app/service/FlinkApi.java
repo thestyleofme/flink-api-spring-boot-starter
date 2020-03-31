@@ -3,9 +3,9 @@ package org.abigballofmud.flink.client.app.service;
 import java.io.File;
 
 import org.abigballofmud.flink.client.app.service.jars.FlinkJarService;
-import org.abigballofmud.flink.api.domain.jars.JarRunRequest;
-import org.abigballofmud.flink.api.domain.jars.JarRunResponseBody;
-import org.abigballofmud.flink.api.domain.jars.JarUploadResponseBody;
+import org.abigballofmud.flink.client.domain.entity.jars.JarRunRequest;
+import org.abigballofmud.flink.client.domain.entity.jars.JarRunResponseBody;
+import org.abigballofmud.flink.client.domain.entity.jars.JarUploadResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 /**
