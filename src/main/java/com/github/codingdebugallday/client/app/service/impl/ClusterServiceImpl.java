@@ -1,8 +1,5 @@
 package com.github.codingdebugallday.client.app.service.impl;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.github.codingdebugallday.client.api.dto.ClusterDTO;
 import com.github.codingdebugallday.client.app.service.ClusterService;
 import com.github.codingdebugallday.client.domain.entity.Cluster;
@@ -39,11 +36,7 @@ public class ClusterServiceImpl implements ClusterService {
     public ClusterDTO insert(ClusterDTO clusterDTO) {
         Cluster cluster = ClusterConvertMapper.INSTANCE.dtoToEntity(clusterDTO);
         clusterMapper.insert(cluster);
-        ClusterDTO dto = ClusterConvertMapper.INSTANCE.entityToDTO(cluster);
-        dto.setJobManagerStandbyUrlSet(Stream
-                .of(clusterDTO.getJobManagerStandbyUrl().split(";"))
-                .collect(Collectors.toSet()));
-        return dto;
+        return ClusterConvertMapper.INSTANCE.entityToDTO(cluster);
     }
 
     @Override

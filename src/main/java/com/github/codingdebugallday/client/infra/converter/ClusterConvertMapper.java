@@ -3,6 +3,7 @@ package com.github.codingdebugallday.client.infra.converter;
 import com.github.codingdebugallday.client.api.dto.ClusterDTO;
 import com.github.codingdebugallday.client.domain.entity.Cluster;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -24,6 +25,8 @@ public interface ClusterConvertMapper {
      * @param cluster Cluster
      * @return org.abigballofmud.flink.client.api.dto.ClusterDTO
      */
+    @Mapping(target = "jobManagerStandbyUrlSet",
+            expression = "java(com.github.codingdebugallday.client.infra.converter.ClusterConvertUtil.standbyUrlToSet(cluster.getJobManagerStandbyUrl()))")
     ClusterDTO entityToDTO(Cluster cluster);
 
     /**

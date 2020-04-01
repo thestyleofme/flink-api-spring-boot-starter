@@ -2,15 +2,14 @@ package com.github.codingdebugallday.client.infra.repository.impl;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.codingdebugallday.client.api.dto.ClusterDTO;
 import com.github.codingdebugallday.client.domain.entity.Cluster;
 import com.github.codingdebugallday.client.domain.repository.ClusterRepository;
 import com.github.codingdebugallday.client.infra.converter.ClusterConvertMapper;
-import com.github.codingdebugallday.client.api.dto.ClusterDTO;
 import com.github.codingdebugallday.client.infra.mapper.ClusterMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -60,11 +59,7 @@ public class ClusterRepositoryImpl implements ClusterRepository {
         QueryWrapper<Cluster> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(Cluster.FIELD_CLUSTER_CODE, clusterCode);
         Cluster cluster = clusterMapper.selectOne(queryWrapper);
-        ClusterDTO dto = ClusterConvertMapper.INSTANCE.entityToDTO(cluster);
-        dto.setJobManagerStandbyUrlSet(Stream
-                .of(dto.getJobManagerStandbyUrl().split(";"))
-                .collect(Collectors.toSet()));
-        return dto;
+        return ClusterConvertMapper.INSTANCE.entityToDTO(cluster);
     }
 
     private QueryWrapper<Cluster> detailWrapper(Long tenantId, Long clusterId) {
