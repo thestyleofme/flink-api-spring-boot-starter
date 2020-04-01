@@ -1,4 +1,4 @@
-package com.github.codingdebugallday.client.infra.impl;
+package com.github.codingdebugallday.client.infra.repository.impl;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
