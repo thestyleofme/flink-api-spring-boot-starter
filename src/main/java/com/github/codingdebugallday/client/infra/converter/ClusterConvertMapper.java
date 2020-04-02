@@ -27,6 +27,10 @@ public interface ClusterConvertMapper {
      */
     @Mapping(target = "jobManagerStandbyUrlSet",
             expression = "java(com.github.codingdebugallday.client.infra.converter.ClusterConvertUtil.standbyUrlToSet(cluster.getJobManagerStandbyUrl()))")
+    @Mapping(target = "host",
+            expression = "java(com.github.codingdebugallday.client.infra.converter.ClusterConvertUtil.getJmHost(cluster.getJobManagerUrl()))")
+    @Mapping(target = "port",
+            expression = "java(com.github.codingdebugallday.client.infra.converter.ClusterConvertUtil.getJmPort(cluster.getJobManagerUrl()))")
     ClusterDTO entityToDTO(Cluster cluster);
 
     /**

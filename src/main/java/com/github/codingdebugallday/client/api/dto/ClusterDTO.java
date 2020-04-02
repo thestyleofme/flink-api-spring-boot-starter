@@ -2,9 +2,11 @@ package com.github.codingdebugallday.client.api.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
-import javax.validation.constraints.NotBlank;
 import javax.persistence.Transient;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -52,7 +54,16 @@ public class ClusterDTO implements Serializable {
     private LocalDateTime lastUpdateDate;
     private Long lastUpdatedBy;
 
+    //===========other===========
+
     @Transient
     private Set<String> jobManagerStandbyUrlSet;
+    @Transient
+    private String host;
+    @Transient
+    private Integer port;
+    @Transient
+    @Valid
+    private List<NodeDTO> nodeDTOList;
 
 }

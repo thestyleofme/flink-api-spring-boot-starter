@@ -69,6 +69,11 @@
         </dependency>
         <!--spring boot-->
         <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
@@ -155,6 +160,11 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-maven-plugin</artifactId>
+                <version>3.0.2</version>
+            </plugin>
             <!-- doc plugin, Maven API文档生成插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

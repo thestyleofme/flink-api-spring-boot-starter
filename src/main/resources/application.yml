@@ -25,6 +25,10 @@ mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
 
+jasypt:
+  encryptor:
+    password: ${JASYPT_ENCRYPTOR_PASSWORD:hUyhdphl2gXcBDEH5dy}
+
 logging:
   level:
     com.github.codingdebugallday.client: debug

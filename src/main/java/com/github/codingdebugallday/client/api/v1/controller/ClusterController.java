@@ -1,5 +1,7 @@
 package com.github.codingdebugallday.client.api.v1.controller;
 
+import javax.validation.Valid;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -47,14 +49,14 @@ public class ClusterController {
 
     @PostMapping
     public ClusterDTO insert(@PathVariable Long tenantId,
-                             @RequestBody ClusterDTO clusterDTO) {
+                             @RequestBody @Valid ClusterDTO clusterDTO) {
         clusterDTO.setTenantId(tenantId);
         return clusterService.insert(clusterDTO);
     }
 
     @PutMapping
     public ClusterDTO update(@PathVariable Long tenantId,
-                             @RequestBody ClusterDTO clusterDTO) {
+                             @RequestBody @Valid ClusterDTO clusterDTO) {
         clusterDTO.setTenantId(tenantId);
         return clusterService.update(clusterDTO);
     }

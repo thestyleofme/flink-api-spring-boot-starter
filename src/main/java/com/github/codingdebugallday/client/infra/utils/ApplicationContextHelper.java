@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.AbstractRefreshableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 
 /**
  * <p>
@@ -22,6 +23,7 @@ import org.springframework.lang.NonNull;
  * @author isacc 2020/03/25 21:05
  * @since 1.0
  */
+@Component
 public class ApplicationContextHelper implements ApplicationContextAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationContextHelper.class);
