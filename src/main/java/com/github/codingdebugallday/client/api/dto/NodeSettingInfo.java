@@ -19,6 +19,7 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class NodeSettingInfo {
 
+    private String host;
     private String username;
     private String password;
 }

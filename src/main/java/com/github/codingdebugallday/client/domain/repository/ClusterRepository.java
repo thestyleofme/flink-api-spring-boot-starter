@@ -44,7 +44,8 @@ public interface ClusterRepository {
      * 根据clusterCode获取唯一条
      *
      * @param clusterCode clusterCode
+     * @param tenantId    租户id
      * @return org.abigballofmud.flink.client.api.dto.ClusterDTO
      */
-    ClusterDTO selectOne(String clusterCode);
+    ClusterDTO selectOne(String clusterCode, Long tenantId);
 }

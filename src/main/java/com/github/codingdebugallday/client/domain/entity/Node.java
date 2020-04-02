@@ -30,7 +30,9 @@ public class Node implements Serializable {
 
     private static final long serialVersionUID = 854464206375410197L;
 
-    public static final String FIELD_NODE_ID = "nodeId";
+    public static final String FIELD_NODE_ID = "node_id";
+    public static final String FIELD_CLUSTER_CODE = "cluster_code";
+    public static final String FIELD_TENANT_ID = "tenant_id";
 
     @TableId(type = IdType.AUTO)
     private Long nodeId;

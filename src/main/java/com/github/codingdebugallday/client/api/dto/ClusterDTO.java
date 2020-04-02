@@ -29,7 +29,7 @@ public class ClusterDTO implements Serializable {
 
     private static final long serialVersionUID = 854464206375410197L;
 
-    public static final String FIELD_CLUSTER_ID = "clusterId";
+    public static final String FIELD_CLUSTER_ID = "cluster_id";
 
     private Long clusterId;
 

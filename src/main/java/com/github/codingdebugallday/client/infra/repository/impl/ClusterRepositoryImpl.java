@@ -55,9 +55,10 @@ public class ClusterRepositoryImpl implements ClusterRepository {
     }
 
     @Override
-    public ClusterDTO selectOne(String clusterCode) {
+    public ClusterDTO selectOne(String clusterCode,Long tenantId) {
         QueryWrapper<Cluster> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(Cluster.FIELD_CLUSTER_CODE, clusterCode);
+        queryWrapper.eq(Cluster.FIELD_TENANT_ID, tenantId);
         Cluster cluster = clusterMapper.selectOne(queryWrapper);
         return ClusterConvertMapper.INSTANCE.entityToDTO(cluster);
     }

@@ -37,6 +37,7 @@ public class NodeDTO implements Serializable {
 
     /**
      * {
+     *     "host": "xxx"
      *     "username": "xxx",
      *     "password": "xxx"
      * }
