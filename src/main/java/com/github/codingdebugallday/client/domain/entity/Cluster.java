@@ -28,7 +28,7 @@ import lombok.*;
 @TableName(value = "flink_cluster")
 public class Cluster implements Serializable {
 
-    private static final long serialVersionUID = 854464206375410197L;
+    private static final long serialVersionUID = 3479540350836927408L;
 
     public static final String FIELD_CLUSTER_ID = "cluster_id";
     public static final String FIELD_TENANT_ID = "tenant_id";

@@ -23,7 +23,7 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class NodeDTO implements Serializable {
 
-    private static final long serialVersionUID = 854464206375410197L;
+    private static final long serialVersionUID = -5632592395382234039L;
 
     public static final String FIELD_NODE_ID = "nodeId";
 
@@ -32,6 +32,11 @@ public class NodeDTO implements Serializable {
     private String clusterCode;
     @NotBlank
     private String nodeCode;
+    /**
+     * master/slave
+     */
+    @NotBlank
+    private String nodeType;
 
     private String nodeDesc;
 

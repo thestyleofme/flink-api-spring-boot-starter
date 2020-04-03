@@ -6,6 +6,7 @@
         <result column="node_id" property="nodeId" jdbcType="DECIMAL"/>
         <result column="cluster_code" property="clusterCode" jdbcType="VARCHAR"/>
         <result column="node_code" property="nodeCode" jdbcType="VARCHAR"/>
+        <result column="node_type" property="nodeType" jdbcType="VARCHAR"/>
         <result column="node_desc" property="nodeDesc" jdbcType="VARCHAR"/>
         <result column="setting_info" property="settingInfo" jdbcType="VARCHAR"/>
         <result column="enabled_flag" property="enabledFlag" jdbcType="TINYINT"/>

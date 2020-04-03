@@ -28,10 +28,11 @@ import lombok.*;
 @TableName(value = "flink_node")
 public class Node implements Serializable {
 
-    private static final long serialVersionUID = 854464206375410197L;
+    private static final long serialVersionUID = 1208427498280311922L;
 
     public static final String FIELD_NODE_ID = "node_id";
     public static final String FIELD_CLUSTER_CODE = "cluster_code";
+    public static final String FIELD_NODE_TYPE = "node_type";
     public static final String FIELD_TENANT_ID = "tenant_id";
 
     @TableId(type = IdType.AUTO)
@@ -40,6 +41,7 @@ public class Node implements Serializable {
     private String clusterCode;
 
     private String nodeCode;
+    private String nodeType;
 
     private String nodeDesc;
     
