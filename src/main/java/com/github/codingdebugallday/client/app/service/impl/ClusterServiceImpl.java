@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.codingdebugallday.client.api.dto.ClusterDTO;
 import com.github.codingdebugallday.client.api.dto.NodeDTO;
 import com.github.codingdebugallday.client.api.dto.NodeSettingInfo;
@@ -30,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 1.0
  */
 @Service
-public class ClusterServiceImpl implements ClusterService {
+public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, Cluster> implements ClusterService {
 
     private final ClusterMapper clusterMapper;
     private final NodeMapper nodeMapper;
@@ -92,7 +93,7 @@ public class ClusterServiceImpl implements ClusterService {
         flinkApiContext.remove(clusterDTO.getClusterCode());
     }
 
-    private List<Node> genNodeList(ClusterDTO clusterDTO){
+    private List<Node> genNodeList(ClusterDTO clusterDTO) {
         return clusterDTO.getNodeDTOList().stream().map(nodeDTO -> {
             nodeDTO.setClusterCode(clusterDTO.getClusterCode());
             nodeDTO.setTenantId(clusterDTO.getTenantId());

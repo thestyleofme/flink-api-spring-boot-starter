@@ -3,6 +3,7 @@ package com.github.codingdebugallday.client.domain.entity.jars;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -19,6 +20,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 @Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class JarRunRequest {
 
     /**

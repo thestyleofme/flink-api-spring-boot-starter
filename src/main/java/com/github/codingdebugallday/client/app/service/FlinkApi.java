@@ -50,6 +50,15 @@ public class FlinkApi {
     }
 
     /**
+     * delete flink jar
+     *
+     * @param jarId flink jar file
+     */
+    public void deleteJar(String jarId) {
+        flinkJarService.deleteJar(jarId, apiClient);
+    }
+
+    /**
      * run flink jar
      *
      * @param jarRunRequest JarRunRequest

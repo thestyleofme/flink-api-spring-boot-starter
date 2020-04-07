@@ -40,6 +40,11 @@ public final class Preconditions {
     }
 
     @SafeVarargs
+    public static <T> boolean checkAnyNotNull(T... reference) {
+        return Stream.of(reference).anyMatch(Objects::isNull);
+    }
+
+    @SafeVarargs
     public static <T> boolean checkAllNull(T... reference) {
         return Stream.of(reference).allMatch(Objects::isNull);
     }

@@ -1,4 +1,4 @@
-package com.github.codingdebugallday.client.api.v1.controller;
+package com.github.codingdebugallday.client.api.controller.v1;
 
 import javax.validation.Valid;
 
@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.codingdebugallday.client.api.dto.ClusterDTO;
+import com.github.codingdebugallday.client.app.service.ClusterService;
 import com.github.codingdebugallday.client.domain.entity.Cluster;
 import com.github.codingdebugallday.client.domain.repository.ClusterRepository;
-import com.github.codingdebugallday.client.app.service.ClusterService;
 import org.springframework.web.bind.annotation.*;
 
 /**

@@ -22,6 +22,10 @@ public final class FlinkApiConstant {
          */
         public static final String UPLOAD_JAR = "/v1/jars/upload";
         /**
+         * flink jar delete url
+         */
+        public static final String DELETE_JAR = "/v1/jars/%s";
+        /**
          * running a jar previously uploaded via '/jars/upload'
          */
         public static final String RUN_JAR = "/v1/jars/%s/run";

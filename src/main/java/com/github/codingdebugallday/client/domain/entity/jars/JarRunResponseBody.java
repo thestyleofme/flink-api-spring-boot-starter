@@ -1,5 +1,7 @@
 package com.github.codingdebugallday.client.domain.entity.jars;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,4 +23,5 @@ public class JarRunResponseBody {
      */
 
     private String jobid;
+    private List<String> errors;
 }
