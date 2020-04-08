@@ -37,6 +37,14 @@ public final class FlinkApiConstant {
         /**
          * flink job url
          */
-        public static final String JOB = "/v1/jobs";
+        public static final String JOB_LIST = "/v1/jobs";
+        public static final String JOB_OVERVIEW = "/v1/jobs/overview";
+        public static final String JOB_DETAIL = "/v1/jobs/%s";
+        public static final String JOB_YARN_CANCEL = "/v1/jobs/%s/yarn-cancel";
+        public static final String JOB_CANCEL_WITH_SAVEPOINTS = "/v1/jobs/%s/savepoints";
+        public static final String JOB_TERMINATE  = "/v1/jobs/%s";
+        public static final String JOB_EXECUTION_RESULT = "/v1/jobs/%s/execution-result";
+        public static final String JOB_EXCEPTIONS = "/v1/jobs/%s/exceptions";
+        public static final String JOB_RESCALING = "/v1/jobs/%s/rescaling";
     }
 }

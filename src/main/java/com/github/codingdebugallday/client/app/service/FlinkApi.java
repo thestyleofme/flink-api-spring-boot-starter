@@ -2,10 +2,12 @@ package com.github.codingdebugallday.client.app.service;
 
 import java.io.File;
 
+import com.github.codingdebugallday.client.app.service.jars.FlinkJarService;
+import com.github.codingdebugallday.client.app.service.jobs.FlinkJobService;
 import com.github.codingdebugallday.client.domain.entity.jars.JarRunRequest;
 import com.github.codingdebugallday.client.domain.entity.jars.JarRunResponseBody;
 import com.github.codingdebugallday.client.domain.entity.jars.JarUploadResponseBody;
-import com.github.codingdebugallday.client.app.service.jars.FlinkJarService;
+import com.github.codingdebugallday.client.domain.entity.jobs.*;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -23,18 +25,16 @@ public class FlinkApi {
      * flink jar 相关 api
      */
     private final FlinkJarService flinkJarService;
+    private final FlinkJobService flinkJobService;
 
     public FlinkApi(RestTemplate restTemplate) {
         this.apiClient = new ApiClient();
         flinkJarService = new FlinkJarService(restTemplate);
+        flinkJobService = new FlinkJobService(restTemplate);
     }
 
     public ApiClient getApiClient() {
         return apiClient;
-    }
-
-    public void setApiClient(ApiClient apiClient) {
-        this.apiClient = apiClient;
     }
 
     //===================flink jar api=========================
@@ -66,6 +66,56 @@ public class FlinkApi {
      */
     public JarRunResponseBody runJar(JarRunRequest jarRunRequest) {
         return flinkJarService.runJar(jarRunRequest, apiClient);
+    }
+
+    //===================flink job api=========================
+
+    /**
+     * Returns an overview over all jobs and their current state.
+     *
+     * @return JobIdsWithStatusOverview
+     */
+    public JobIdsWithStatusOverview jobList() {
+        return flinkJobService.jobList(apiClient);
+    }
+
+    /**
+     * Returns an overview over all jobs.
+     *
+     * @return MultipleJobsDetails
+     */
+    public MultipleJobsDetails jobsDetails() {
+        return flinkJobService.jobsDetails(apiClient);
+    }
+
+    /**
+     * Returns details of a job.
+     *
+     * @param jobId jobId
+     */
+    public JobDetailsInfo jobDetail(String jobId) {
+        return flinkJobService.jobsDetail(jobId, apiClient);
+    }
+
+    /**
+     * cancel job use yarn
+     *
+     * @param jobId jobId
+     * @return if has error return FlinkError
+     */
+    public FlinkError jobYarnCancel(String jobId) {
+        return flinkJobService.jobYarnCancel(jobId, apiClient);
+    }
+
+    /**
+     * Triggers a savepoint, and optionally cancels the job afterwards.
+     * This async operation would return a 'triggerid' for further query identifier.
+     *
+     * @param savepointTriggerRequestBody SavepointTriggerRequestBody
+     * @return TriggerResponse TriggerResponse
+     */
+    public TriggerResponse jobCancelOptionSavepoints(SavepointTriggerRequestBody savepointTriggerRequestBody) {
+        return flinkJobService.jobCancelOptionSavepoints(savepointTriggerRequestBody, apiClient);
     }
 
 }

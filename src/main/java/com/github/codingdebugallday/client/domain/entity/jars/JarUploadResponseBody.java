@@ -1,5 +1,7 @@
 package com.github.codingdebugallday.client.domain.entity.jars;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,4 +24,5 @@ public class JarUploadResponseBody {
      */
     private String filename;
     private String status;
+    private List<String> errors;
 }
