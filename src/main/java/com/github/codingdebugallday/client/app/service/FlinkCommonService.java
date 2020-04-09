@@ -1,13 +1,9 @@
 package com.github.codingdebugallday.client.app.service;
 
-import java.util.Set;
-
-import com.github.codingdebugallday.client.infra.exceptions.FlinkApiCommonException;
 import com.github.codingdebugallday.client.infra.utils.RetryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.RestTemplate;
@@ -47,39 +43,6 @@ public class FlinkCommonService {
     }
 
     /**
-     * getForEntityStandby
-     *
-     * @param restTemplate            RestTemplate
-     * @param url                     url
-     * @param jobManagerStandbyUrlSet Set<String>
-     * @param extraUrl                extraUrl
-     * @param responseType            Class<T>
-     * @param errorCode               errorCode
-     * @param uriVariables            Object... uriVariables
-     * @return T
-     */
-    public <T> T getForEntityStandby(RestTemplate restTemplate,
-                                     String url,
-                                     Set<String> jobManagerStandbyUrlSet,
-                                     String extraUrl,
-                                     Class<T> responseType,
-                                     String errorCode,
-                                     Object... uriVariables) {
-        try {
-            return getForEntity(restTemplate, url + extraUrl, responseType, uriVariables);
-        } catch (Exception e) {
-            for (String standbyUrl : jobManagerStandbyUrlSet) {
-                try {
-                    return getForEntity(restTemplate, standbyUrl + extraUrl, responseType, uriVariables);
-                } catch (Exception ex) {
-                    // ignore
-                }
-            }
-            throw new FlinkApiCommonException(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorCode);
-        }
-    }
-
-    /**
      * exchange
      *
      * @param restTemplate  RestTemplate
@@ -104,40 +67,4 @@ public class FlinkCommonService {
         }, 3, 1000L, true).getBody();
     }
 
-    /**
-     * exchangeStandby
-     *
-     * @param restTemplate            RestTemplate
-     * @param url                     url
-     * @param jobManagerStandbyUrlSet Set<String>
-     * @param extraUrl                extraUrl
-     * @param method                  HttpMethod
-     * @param requestEntity           HttpEntity<?>
-     * @param responseType            Class<T>
-     * @param errorCode               errorCode
-     * @param uriVariables            Object... uriVariables
-     * @return T
-     */
-    public <T> T exchangeStandby(RestTemplate restTemplate,
-                                 String url,
-                                 Set<String> jobManagerStandbyUrlSet,
-                                 String extraUrl,
-                                 HttpMethod method,
-                                 @Nullable HttpEntity<?> requestEntity,
-                                 Class<T> responseType,
-                                 String errorCode,
-                                 Object... uriVariables) {
-        try {
-            return exchange(restTemplate, url + extraUrl, method, requestEntity, responseType, uriVariables);
-        } catch (Exception e) {
-            for (String standbyUrl : jobManagerStandbyUrlSet) {
-                try {
-                    return exchange(restTemplate, standbyUrl + extraUrl, method, requestEntity, responseType, uriVariables);
-                } catch (Exception ex) {
-                    // ignore
-                }
-            }
-            throw new FlinkApiCommonException(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorCode);
-        }
-    }
 }

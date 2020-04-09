@@ -5,7 +5,9 @@ import com.github.codingdebugallday.client.app.service.ApiClient;
 import com.github.codingdebugallday.client.app.service.FlinkCommonService;
 import com.github.codingdebugallday.client.domain.entity.tm.TaskManagerInfo;
 import com.github.codingdebugallday.client.infra.constants.FlinkApiConstant;
+import com.github.codingdebugallday.client.infra.exceptions.FlinkApiCommonException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -27,11 +29,19 @@ public class FlinkTaskManagerService extends FlinkCommonService {
 
     public TaskManagerInfo taskMangerList(ApiClient apiClient) {
         ClusterDTO clusterDTO = apiClient.getClusterDTO();
-        return getForEntityStandby(restTemplate,
-                clusterDTO.getJobManagerUrl(),
-                clusterDTO.getJobManagerStandbyUrlSet(),
-                FlinkApiConstant.TaskManager.TM_LIST,
-                TaskManagerInfo.class,
-                "error.flink.tm.list");
+        try {
+            return getForEntity(restTemplate, clusterDTO.getJobManagerUrl() + FlinkApiConstant.TaskManager.TM_LIST,
+                    TaskManagerInfo.class);
+        } catch (Exception e) {
+            for (String url : clusterDTO.getJobManagerStandbyUrlSet()) {
+                try {
+                    return getForEntity(restTemplate, url + FlinkApiConstant.TaskManager.TM_LIST,
+                            TaskManagerInfo.class);
+                } catch (Exception ex) {
+                    // ignore
+                }
+            }
+            throw new FlinkApiCommonException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error.flink.tm.list");
+        }
     }
 }
