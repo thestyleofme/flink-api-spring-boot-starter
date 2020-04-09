@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -35,15 +35,15 @@ public class FlinkApiAutoConfiguration {
     }
 
     @Bean("flinkRestTemplate")
-    public RestTemplate restTemplate(ClientHttpRequestFactory simpleClientHttpRequestFactory) {
-        RestTemplate restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
+    public RestTemplate restTemplate(ClientHttpRequestFactory clientHttpRequestFactory) {
+        RestTemplate restTemplate = new RestTemplate(clientHttpRequestFactory);
         restTemplate.setErrorHandler(new RestTemplateErrorHandler());
         return restTemplate;
     }
 
     @Bean
-    public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
-        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+    public ClientHttpRequestFactory clientHttpRequestFactory() {
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
         factory.setReadTimeout(5000);
         factory.setConnectTimeout(15000);
         return factory;

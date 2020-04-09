@@ -24,6 +24,7 @@
         <dynamic.datasource.boot.version>3.0.0</dynamic.datasource.boot.version>
         <org.mapstruct.version>1.3.1.Final</org.mapstruct.version>
         <lombok.version>1.18.12</lombok.version>
+        <flink.version>1.10.0</flink.version>
     </properties>
 
     <name>flink-api-spring-boot-starter</name>
@@ -148,6 +149,11 @@
             <artifactId>transmittable-thread-local</artifactId>
             <version>2.11.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+
 
     </dependencies>
 

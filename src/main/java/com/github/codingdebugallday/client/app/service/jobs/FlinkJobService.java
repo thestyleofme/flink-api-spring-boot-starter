@@ -1,18 +1,20 @@
 package com.github.codingdebugallday.client.app.service.jobs;
 
+import java.util.Optional;
+
 import com.github.codingdebugallday.client.api.dto.ClusterDTO;
 import com.github.codingdebugallday.client.app.service.ApiClient;
+import com.github.codingdebugallday.client.app.service.FlinkCommonService;
 import com.github.codingdebugallday.client.domain.entity.jobs.*;
 import com.github.codingdebugallday.client.infra.constants.FlinkApiConstant;
-import com.github.codingdebugallday.client.infra.exceptions.FlinkApiCommonException;
 import com.github.codingdebugallday.client.infra.utils.JSON;
 import com.github.codingdebugallday.client.infra.utils.RestTemplateUtil;
-import com.github.codingdebugallday.client.infra.utils.RetryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -24,7 +26,7 @@ import org.springframework.web.client.RestTemplate;
  * @since 1.0
  */
 @Slf4j
-public class FlinkJobService {
+public class FlinkJobService extends FlinkCommonService {
 
     private final RestTemplate restTemplate;
 
@@ -34,148 +36,99 @@ public class FlinkJobService {
 
     public JobIdsWithStatusOverview jobList(ApiClient apiClient) {
         ClusterDTO clusterDTO = apiClient.getClusterDTO();
-        try {
-            return RetryUtil.executeWithRetry(() -> {
-                        ResponseEntity<JobIdsWithStatusOverview> responseEntity = restTemplate.getForEntity(
-                                clusterDTO.getJobManagerUrl() + FlinkApiConstant.Jobs.JOB_LIST, JobIdsWithStatusOverview.class);
-                        log.debug("response, status: {}, body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
-                        return responseEntity;
-                    },
-                    3, 1000L, true).getBody();
-        } catch (Exception e) {
-            for (String url : clusterDTO.getJobManagerStandbyUrlSet()) {
-                try {
-                    return RetryUtil.executeWithRetry(() -> {
-                                ResponseEntity<JobIdsWithStatusOverview> responseEntity = restTemplate.getForEntity(
-                                        url + FlinkApiConstant.Jobs.JOB_LIST, JobIdsWithStatusOverview.class);
-                                log.debug("response, status: {}, body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
-                                return responseEntity;
-                            },
-                            3, 1000L, true).getBody();
-                } catch (Exception ex) {
-                    // ignore
-                }
-            }
-            throw new FlinkApiCommonException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error.flink.job.list");
-        }
+        return getForEntityStandby(restTemplate,
+                clusterDTO.getJobManagerUrl(),
+                clusterDTO.getJobManagerStandbyUrlSet(),
+                FlinkApiConstant.Jobs.JOB_LIST,
+                JobIdsWithStatusOverview.class,
+                "error.flink.job.list");
     }
 
     public MultipleJobsDetails jobsDetails(ApiClient apiClient) {
         ClusterDTO clusterDTO = apiClient.getClusterDTO();
-        try {
-            return RetryUtil.executeWithRetry(() -> {
-                        ResponseEntity<MultipleJobsDetails> responseEntity = restTemplate.getForEntity(
-                                clusterDTO.getJobManagerUrl() + FlinkApiConstant.Jobs.JOB_OVERVIEW, MultipleJobsDetails.class);
-                        log.debug("response, status: {}, body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
-                        return responseEntity;
-                    },
-                    3, 1000L, true).getBody();
-        } catch (Exception e) {
-            for (String url : clusterDTO.getJobManagerStandbyUrlSet()) {
-                try {
-                    return RetryUtil.executeWithRetry(() -> {
-                                ResponseEntity<MultipleJobsDetails> responseEntity = restTemplate.getForEntity(
-                                        url + FlinkApiConstant.Jobs.JOB_OVERVIEW, MultipleJobsDetails.class);
-                                log.debug("response, status: {}, body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
-                                return responseEntity;
-                            },
-                            3, 1000L, true).getBody();
-                } catch (Exception ex) {
-                    // ignore
-                }
-            }
-            throw new FlinkApiCommonException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error.flink.jobs.details");
-        }
+        return getForEntityStandby(restTemplate,
+                clusterDTO.getJobManagerUrl(),
+                clusterDTO.getJobManagerStandbyUrlSet(),
+                FlinkApiConstant.Jobs.JOB_OVERVIEW,
+                MultipleJobsDetails.class,
+                "error.flink.jobs.details");
     }
 
     public JobDetailsInfo jobsDetail(String jobId, ApiClient apiClient) {
         ClusterDTO clusterDTO = apiClient.getClusterDTO();
-        try {
-            return RetryUtil.executeWithRetry(() -> {
-                        ResponseEntity<JobDetailsInfo> responseEntity = restTemplate.getForEntity(
-                                clusterDTO.getJobManagerUrl() + String.format(FlinkApiConstant.Jobs.JOB_DETAIL, jobId),
-                                JobDetailsInfo.class);
-                        log.debug("response, status: {}, body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
-                        return responseEntity;
-                    },
-                    3, 1000L, true).getBody();
-        } catch (Exception e) {
-            for (String url : clusterDTO.getJobManagerStandbyUrlSet()) {
-                try {
-                    return RetryUtil.executeWithRetry(() -> {
-                                ResponseEntity<JobDetailsInfo> responseEntity = restTemplate.getForEntity(
-                                        url + String.format(FlinkApiConstant.Jobs.JOB_DETAIL, jobId), JobDetailsInfo.class);
-                                log.debug("response, status: {}, body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
-                                return responseEntity;
-                            },
-                            3, 1000L, true).getBody();
-                } catch (Exception ex) {
-                    // ignore
-                }
-            }
-            throw new FlinkApiCommonException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error.flink.job.detail");
-        }
+        return getForEntityStandby(restTemplate,
+                clusterDTO.getJobManagerUrl(),
+                clusterDTO.getJobManagerStandbyUrlSet(),
+                FlinkApiConstant.Jobs.JOB_DETAIL,
+                JobDetailsInfo.class,
+                "error.flink.jobs.detail",
+                jobId);
     }
 
-    public FlinkError jobYarnCancel(String jobId, ApiClient apiClient) {
+    public FlinkApiErrorResponse jobYarnCancel(String jobId, ApiClient apiClient) {
         ClusterDTO clusterDTO = apiClient.getClusterDTO();
-        try {
-            return RetryUtil.executeWithRetry(() -> {
-                        ResponseEntity<FlinkError> responseEntity = restTemplate.getForEntity(
-                                clusterDTO.getJobManagerUrl() + String.format(FlinkApiConstant.Jobs.JOB_YARN_CANCEL, jobId),
-                                FlinkError.class);
-                        log.debug("response, status: {}, body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
-                        return responseEntity;
-                    },
-                    3, 1000L, true).getBody();
-        } catch (Exception e) {
-            for (String url : clusterDTO.getJobManagerStandbyUrlSet()) {
-                try {
-                    return RetryUtil.executeWithRetry(() -> {
-                                ResponseEntity<FlinkError> responseEntity = restTemplate.getForEntity(
-                                        url + String.format(FlinkApiConstant.Jobs.JOB_YARN_CANCEL, jobId), FlinkError.class);
-                                log.debug("response, status: {}, body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
-                                return responseEntity;
-                            },
-                            3, 1000L, true).getBody();
-                } catch (Exception ex) {
-                    // ignore
-                }
-            }
-            throw new FlinkApiCommonException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error.flink.job.yarn.cancel");
-        }
+        return getForEntityStandby(restTemplate,
+                clusterDTO.getJobManagerUrl(),
+                clusterDTO.getJobManagerStandbyUrlSet(),
+                FlinkApiConstant.Jobs.JOB_YARN_CANCEL,
+                FlinkApiErrorResponse.class,
+                "error.flink.job.yarn.cancel",
+                jobId);
     }
 
-    public TriggerResponse jobCancelOptionSavepoints(SavepointTriggerRequestBody savepointTriggerRequestBody,
-                                            ApiClient apiClient) {
+    public TriggerResponse jobCancelOptionSavepoints(SavepointTriggerRequestBody savepointTriggerRequestBody, ApiClient apiClient) {
         HttpEntity<String> requestEntity =
                 new HttpEntity<>((JSON.toJson(savepointTriggerRequestBody)), RestTemplateUtil.applicationJsonHeaders());
         ClusterDTO clusterDTO = apiClient.getClusterDTO();
-        try {
-            return RetryUtil.executeWithRetry(() -> {
-                        ResponseEntity<TriggerResponse> responseEntity = restTemplate.exchange(clusterDTO.getJobManagerUrl() +
-                                        String.format(FlinkApiConstant.Jobs.JOB_CANCEL_WITH_SAVEPOINTS, savepointTriggerRequestBody.getJobId()),
-                                HttpMethod.POST, requestEntity, TriggerResponse.class);
-                        log.debug("response, status: {}, body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
-                        return responseEntity;
-                    },
-                    3, 1000L, true).getBody();
-        } catch (Exception e) {
-            for (String url : clusterDTO.getJobManagerStandbyUrlSet()) {
-                try {
-                    return RetryUtil.executeWithRetry(() -> {
-                                ResponseEntity<TriggerResponse> responseEntity = restTemplate.exchange(
-                                        url + String.format(FlinkApiConstant.Jobs.JOB_CANCEL_WITH_SAVEPOINTS, savepointTriggerRequestBody.getJobId()),
-                                        HttpMethod.POST, requestEntity, TriggerResponse.class);
-                                log.debug("response, status: {}, body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
-                                return responseEntity;
-                            },
-                            3, 1000L, true).getBody();
-                } catch (Exception ex) {
-                    // ignore
-                }
-            }
-            throw new FlinkApiCommonException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error.flink.jar.cancel.option.savepoint");
+        return exchangeStandby(restTemplate,
+                clusterDTO.getJobManagerUrl(),
+                clusterDTO.getJobManagerStandbyUrlSet(),
+                FlinkApiConstant.Jobs.JOB_CANCEL_WITH_SAVEPOINTS,
+                HttpMethod.POST, requestEntity, TriggerResponse.class,
+                "error.flink.jar.cancel.option.savepoint",
+                savepointTriggerRequestBody.getJobId());
+    }
+
+    public FlinkApiErrorResponse jobTerminate(String jobId, String mode, ApiClient apiClient) {
+        ClusterDTO clusterDTO = apiClient.getClusterDTO();
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>(1);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body);
+        return exchangeStandby(restTemplate,
+                clusterDTO.getJobManagerUrl(),
+                clusterDTO.getJobManagerStandbyUrlSet(),
+                FlinkApiConstant.Jobs.JOB_TERMINATE,
+                HttpMethod.PATCH, requestEntity, FlinkApiErrorResponse.class,
+                "error.flink.job.terminate",
+                jobId, Optional.ofNullable(mode).orElse("cancel"));
+    }
+
+    public TriggerResponse jobRescale(String jobId, int parallelism, ApiClient apiClient) {
+        ClusterDTO clusterDTO = apiClient.getClusterDTO();
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>(1);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body);
+        return exchangeStandby(restTemplate,
+                clusterDTO.getJobManagerUrl(),
+                clusterDTO.getJobManagerStandbyUrlSet(),
+                FlinkApiConstant.Jobs.JOB_RESCALING,
+                HttpMethod.PATCH, requestEntity, TriggerResponse.class,
+                "error.flink.job.rescaling",
+                jobId, parallelism);
+    }
+
+    public JobExceptionsInfo jobException(String jobId, String maxExceptions, ApiClient apiClient) {
+        ClusterDTO clusterDTO = apiClient.getClusterDTO();
+        String extraUrl;
+        if (StringUtils.isEmpty(maxExceptions)) {
+            extraUrl = FlinkApiConstant.Jobs.JOB_EXCEPTIONS;
+        } else {
+            extraUrl = String.format("%s?maxExceptions=%s", FlinkApiConstant.Jobs.JOB_EXCEPTIONS, maxExceptions);
         }
+        return getForEntityStandby(restTemplate,
+                clusterDTO.getJobManagerUrl(),
+                clusterDTO.getJobManagerStandbyUrlSet(),
+                extraUrl,
+                JobExceptionsInfo.class,
+                "error.flink.job.exception",
+                jobId);
     }
 }

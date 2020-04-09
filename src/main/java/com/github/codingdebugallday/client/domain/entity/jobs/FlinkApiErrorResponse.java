@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Data
-public class FlinkError {
+public class FlinkApiErrorResponse {
 
     private List<String> errors;
 }
