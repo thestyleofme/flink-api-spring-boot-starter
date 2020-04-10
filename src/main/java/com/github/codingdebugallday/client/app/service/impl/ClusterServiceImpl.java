@@ -1,6 +1,7 @@
 package com.github.codingdebugallday.client.app.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
@@ -9,8 +10,12 @@ import com.github.codingdebugallday.client.api.dto.ClusterDTO;
 import com.github.codingdebugallday.client.api.dto.NodeDTO;
 import com.github.codingdebugallday.client.api.dto.NodeSettingInfo;
 import com.github.codingdebugallday.client.app.service.ClusterService;
+import com.github.codingdebugallday.client.app.service.FlinkApi;
 import com.github.codingdebugallday.client.domain.entity.Cluster;
 import com.github.codingdebugallday.client.domain.entity.Node;
+import com.github.codingdebugallday.client.domain.entity.jobs.*;
+import com.github.codingdebugallday.client.domain.entity.tm.TaskManagerDetail;
+import com.github.codingdebugallday.client.domain.entity.tm.TaskManagerInfo;
 import com.github.codingdebugallday.client.domain.repository.ClusterRepository;
 import com.github.codingdebugallday.client.infra.context.FlinkApiContext;
 import com.github.codingdebugallday.client.infra.converter.ClusterConvertMapper;
@@ -91,6 +96,97 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, Cluster> impl
         clusterRepository.delete(clusterDTO);
         // flinkApiContext还需remove掉
         flinkApiContext.remove(clusterDTO.getClusterCode());
+    }
+
+    @Override
+    public JobIdsWithStatusOverview jobList(Long tenantId, String clusterCode) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.jobList();
+    }
+
+    @Override
+    public MultipleJobsDetails jobsDetails(Long tenantId, String clusterCode) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.jobsDetails();
+    }
+
+    @Override
+    public JobDetailsInfo jobDetail(Long tenantId, String clusterCode, String jobId) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.jobDetail(jobId);
+    }
+
+    @Override
+    public FlinkApiErrorResponse jobYarnCancel(Long tenantId, String clusterCode, String jobId) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.jobYarnCancel(jobId);
+    }
+
+    @Override
+    public FlinkApiErrorResponse jobTerminate(Long tenantId, String clusterCode, String jobId, String mode) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.jobTerminate(jobId, mode);
+    }
+
+    @Override
+    public TriggerResponse jobCancelOptionSavepoints(Long tenantId, String clusterCode,
+                                                     SavepointTriggerRequestBody savepointTriggerRequestBody) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.jobCancelOptionSavepoints(savepointTriggerRequestBody);
+    }
+
+    @Override
+    public TriggerResponse jobRescale(Long tenantId, String clusterCode, String jobId, int parallelism) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.jobRescale(jobId, parallelism);
+    }
+
+    @Override
+    public JobExceptionsInfo jobException(Long tenantId, String clusterCode, String jobId, String maxExceptions) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.jobException(jobId, maxExceptions);
+    }
+
+    @Override
+    public TaskManagerInfo taskMangerList(Long tenantId, String clusterCode) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.taskMangerList();
+    }
+
+    @Override
+    public TaskManagerDetail taskManagerDetail(Long tenantId, String clusterCode, String tmId) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.taskManagerDetail(tmId);
+    }
+
+    @Override
+    public String taskManagerLog(Long tenantId, String clusterCode, String tmId) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.taskManagerLog(tmId);
+    }
+
+    @Override
+    public String taskManagerStdout(Long tenantId, String clusterCode, String tmId) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.taskManagerStdout(tmId);
+    }
+
+    @Override
+    public List<Map<String, String>> jobManagerConfig(Long tenantId, String clusterCode) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.jobManagerConfig();
+    }
+
+    @Override
+    public String jobManagerLog(Long tenantId, String clusterCode) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.jobManagerLog();
+    }
+
+    @Override
+    public String jobManagerStdout(Long tenantId, String clusterCode) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.jobManagerStdout();
     }
 
     private List<Node> genNodeList(ClusterDTO clusterDTO) {
