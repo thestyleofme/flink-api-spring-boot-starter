@@ -37,7 +37,7 @@ public class FlinkCommonService {
                     url,
                     responseType,
                     uriVariables);
-            log.debug("response, status: {}, body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
+            log.debug("response, status: {}", responseEntity.getStatusCode());
             return responseEntity;
         }, 3, 1000L, true).getBody();
     }
@@ -62,7 +62,7 @@ public class FlinkCommonService {
         return RetryUtil.executeWithRetry(() -> {
             ResponseEntity<T> responseEntity = restTemplate.exchange(url, method,
                     requestEntity, responseType, uriVariables);
-            log.debug("response, status: {}, body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
+            log.debug("response, status: {}", responseEntity.getStatusCode());
             return responseEntity;
         }, 3, 1000L, true).getBody();
     }

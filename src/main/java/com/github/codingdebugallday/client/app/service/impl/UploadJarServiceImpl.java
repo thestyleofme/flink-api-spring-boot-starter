@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author isacc 2020/04/07 11:02
  * @since 1.0
  */
-@Service
+@Service("flinkUploadJarService")
 @Slf4j
 public class UploadJarServiceImpl extends ServiceImpl<UploadJarMapper, UploadJar> implements UploadJarService {
 

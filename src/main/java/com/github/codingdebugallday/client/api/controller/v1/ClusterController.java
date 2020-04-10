@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * @author isacc 2020/03/28 1:14
  * @since 1.0
  */
-@RestController("clusterController.v1")
+@RestController("flinkClusterController.v1")
 @RequestMapping("/v1/{tenantId}/cluster")
 public class ClusterController {
 

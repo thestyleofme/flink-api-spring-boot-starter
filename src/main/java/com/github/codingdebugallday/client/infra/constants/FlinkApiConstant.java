@@ -54,6 +54,21 @@ public final class FlinkApiConstant {
          * flink taskmanager url
          */
         public static final String TM_LIST = "/v1/taskmanagers";
+        public static final String TM_DETAIL = "/v1/taskmanagers/{1}";
+        public static final String TM_LOG = "/v1/taskmanagers/{1}/log";
+        public static final String TM_STDOUT= "/v1/taskmanagers/{1}/stdout";
+
+    }
+
+    public static final class JobManager{
+        private JobManager() {
+        }
+        /**
+         * flink jobmanager url
+         */
+        public static final String JM_CONFIG = "/v1/jobmanager/config";
+        public static final String JM_LOG = "/jobmanager/log";
+        public static final String JM_STDOUT = "/jobmanager/stdout";
 
     }
 

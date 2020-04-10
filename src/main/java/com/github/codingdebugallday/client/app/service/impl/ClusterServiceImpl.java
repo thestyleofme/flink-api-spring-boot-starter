@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author isacc 2020/03/31 12:02
  * @since 1.0
  */
-@Service
+@Service("flinkClusterService")
 public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, Cluster> implements ClusterService {
 
     private final ClusterMapper clusterMapper;

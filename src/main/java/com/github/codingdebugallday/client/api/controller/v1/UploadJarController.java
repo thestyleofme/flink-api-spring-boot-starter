@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author isacc 2020/4/7 10:12
  * @since 1.0
  */
-@RestController("uploadJarController.v1")
+@RestController("flinkUploadJarController.v1")
 @RequestMapping("/v1/{tenantId}/upload-jar")
 public class UploadJarController {
 
