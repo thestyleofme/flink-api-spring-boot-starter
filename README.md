@@ -5,8 +5,16 @@
 # Quick Start
 
 1. 执行```src/main/resources/sql/flink_explore.sql```
-2. spring boot配置文件如示例，```src/main/resources/application.yml```
-3. 创建自己的flink集群, 已内置```com/github/codingdebugallday/client/api/controller/v1/ClusterController.java```许多接口
+2. jar已发布到中仓仓库，直接依赖即可
+```pom
+<dependency>
+    <groupId>com.github.codingdebugallday</groupId>
+    <artifactId>flink-api-spring-boot-starter</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+3. spring boot配置文件如示例，```src/main/resources/application.yml```
+4. 创建自己的flink集群, 已内置```com/github/codingdebugallday/client/api/controller/v1/ClusterController.java```许多接口
 > url: http://localhost:9527/v1/{tenantId}/cluster
 
 > method: post
