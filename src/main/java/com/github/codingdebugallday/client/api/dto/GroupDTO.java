@@ -8,26 +8,26 @@ package com.github.codingdebugallday.client.api.dto;
  * @author isacc 2020/04/07 16:00
  * @since 1.0
  */
-public class GroupDTO {
+public interface GroupDTO {
 
     /**
      * insert分组
      */
-    public interface Insert {
+    interface Insert {
 
     }
 
     /**
      * update分组
      */
-    public interface Update {
+    interface Update {
 
     }
 
     /**
      * delete分组
      */
-    public interface Delete {
+    interface Delete {
 
     }
 }

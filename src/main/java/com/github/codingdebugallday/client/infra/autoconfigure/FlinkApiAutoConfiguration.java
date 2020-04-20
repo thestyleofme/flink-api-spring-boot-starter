@@ -5,6 +5,7 @@ import com.github.codingdebugallday.client.domain.repository.NodeRepository;
 import com.github.codingdebugallday.client.infra.context.FlinkApiContext;
 import com.github.codingdebugallday.client.infra.exceptions.RestTemplateErrorHandler;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +29,7 @@ import org.springframework.web.client.RestTemplate;
 public class FlinkApiAutoConfiguration {
 
     @Bean
-    public FlinkApiContext flinkApiContext(RestTemplate restTemplate,
+    public FlinkApiContext flinkApiContext(@Qualifier("flinkRestTemplate") RestTemplate restTemplate,
                                            ClusterRepository clusterRepository,
                                            NodeRepository nodeRepository) {
         return new FlinkApiContext(restTemplate, clusterRepository, nodeRepository);
