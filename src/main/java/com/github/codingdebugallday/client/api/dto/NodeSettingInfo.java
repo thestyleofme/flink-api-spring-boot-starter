@@ -22,4 +22,9 @@ public class NodeSettingInfo {
     private String host;
     private String username;
     private String password;
+    /**
+     * 是否需要修改该节点的密码
+     */
+    @Builder.Default
+    private Boolean changePassword = false;
 }

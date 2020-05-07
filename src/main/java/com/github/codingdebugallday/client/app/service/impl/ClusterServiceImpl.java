@@ -213,7 +213,11 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, Cluster> impl
             nodeDTO.setClusterCode(clusterDTO.getClusterCode());
             nodeDTO.setTenantId(clusterDTO.getTenantId());
             NodeSettingInfo nodeSettingInfo = JSON.toObj(nodeDTO.getSettingInfo(), NodeSettingInfo.class);
-            nodeSettingInfo.setPassword(jasyptStringEncryptor.encrypt(nodeSettingInfo.getPassword()));
+            // 第一次新增时对密码进行加密 或者 该节点需要对密码进行更新
+            if (Objects.isNull(nodeDTO.getNodeId()) ||
+                    nodeSettingInfo.getChangePassword()) {
+                nodeSettingInfo.setPassword(jasyptStringEncryptor.encrypt(nodeSettingInfo.getPassword()));
+            }
             nodeDTO.setSettingInfo(JSON.toJson(nodeSettingInfo));
             return NodeConvertMapper.INSTANCE.dtoToEntity(nodeDTO);
         }).collect(Collectors.toList());
