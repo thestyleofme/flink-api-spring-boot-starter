@@ -3,6 +3,7 @@ package com.github.codingdebugallday.client.infra.utils;
 import java.util.List;
 import java.util.concurrent.*;
 
+import com.github.codingdebugallday.client.infra.exceptions.FlinkCommonException;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public final class RetryUtil {
     public static <T> T executeWithRetry(Callable<T> callable,
                                          int retryTimes,
                                          long sleepTimeInMilliSecond,
-                                         boolean exponential) throws Exception {
+                                         boolean exponential) {
         Retry retry = new Retry();
         return retry.doRetry(callable, retryTimes, sleepTimeInMilliSecond, exponential, null);
     }
@@ -58,7 +59,7 @@ public final class RetryUtil {
                                          int retryTimes,
                                          long sleepTimeInMilliSecond,
                                          boolean exponential,
-                                         List<Class<?>> retryExceptionClassList) throws Exception {
+                                         List<Class<?>> retryExceptionClassList) {
         Retry retry = new Retry();
         return retry.doRetry(callable, retryTimes, sleepTimeInMilliSecond, exponential, retryExceptionClassList);
     }
@@ -83,7 +84,7 @@ public final class RetryUtil {
                                               long sleepTimeInMilliSecond,
                                               boolean exponential,
                                               long timeoutMs,
-                                              ThreadPoolExecutor executor) throws Exception {
+                                              ThreadPoolExecutor executor) {
         Retry retry = new AsyncRetry(timeoutMs, executor);
         return retry.doRetry(callable, retryTimes, sleepTimeInMilliSecond, exponential, null);
     }
@@ -110,83 +111,87 @@ public final class RetryUtil {
 
         public <T> T doRetry(Callable<T> callable, int retryTimes,
                              long sleepTimeInMilliSecond, boolean exponential,
-                             List<Class<?>> retryExceptionClassList)
-                throws Exception {
-
+                             List<Class<?>> retryExceptionClassList) {
             if (null == callable) {
                 throw new IllegalArgumentException("系统编程错误, 入参callable不能为空 ! ");
             }
-
             if (retryTimes < 1) {
                 throw new IllegalArgumentException(String.format(
                         "系统编程错误, 入参retryTimes[%d]不能小于1 !", retryTimes));
             }
-
-            Exception saveException = null;
+            Throwable t = null;
             for (int i = 0; i < retryTimes; i++) {
                 try {
                     return call(callable);
                 } catch (Exception e) {
-                    saveException = e;
+                    t = e;
                     if (i == 0) {
-                        LOG.error(String.format("Exception when calling callable, 异常Msg: %s", saveException.getMessage()), saveException);
+                        LOG.error(String.format("Exception when calling callable, 异常Msg: %s", t.getMessage()), t);
                     }
-
-                    if (null != retryExceptionClassList && !retryExceptionClassList.isEmpty()) {
-                        boolean needRetry = false;
-                        for (Class<?> eachExceptionClass : retryExceptionClassList) {
-                            if (eachExceptionClass == e.getClass()) {
-                                needRetry = true;
-                                break;
-                            }
-                        }
-                        if (!needRetry) {
-                            throw saveException;
-                        }
-                    }
-
-                    if (i + 1 < retryTimes && sleepTimeInMilliSecond > 0) {
-                        long startTime = System.currentTimeMillis();
-
-                        long timeToSleep;
-                        if (exponential) {
-                            timeToSleep = sleepTimeInMilliSecond * (long) Math.pow(2, i);
-                            if (timeToSleep >= MAX_SLEEP_MILLISECOND) {
-                                timeToSleep = MAX_SLEEP_MILLISECOND;
-                            }
-                        } else {
-                            timeToSleep = sleepTimeInMilliSecond;
-                            if (timeToSleep >= MAX_SLEEP_MILLISECOND) {
-                                timeToSleep = MAX_SLEEP_MILLISECOND;
-                            }
-                        }
-
-                        try {
-                            Thread.sleep(timeToSleep);
-                        } catch (InterruptedException ignored) {
-                            // ignore
-                        }
-
-                        long realTimeSleep = System.currentTimeMillis() - startTime;
-
-                        LOG.error(String.format("Exception when calling callable, 即将尝试执行第%s次重试.本次重试计划等待[%s]ms,实际等待[%s]ms, 异常Msg: [%s]",
-                                i + 1, timeToSleep, realTimeSleep, e.getMessage()));
-
-                    }
+                    doNeedRetry(retryExceptionClassList, e);
+                    doSleep(i, retryTimes, sleepTimeInMilliSecond, exponential, e);
                 }
             }
-            throw saveException;
+            throw new FlinkCommonException(t);
         }
 
         protected <T> T call(Callable<T> callable) throws Exception {
             return callable.call();
         }
+
+        private static void doNeedRetry(List<Class<?>> retryExceptionClassList,
+                                        Exception e) {
+            if (null != retryExceptionClassList && !retryExceptionClassList.isEmpty()) {
+                boolean needRetry = false;
+                for (Class<?> eachExceptionClass : retryExceptionClassList) {
+                    if (eachExceptionClass == e.getClass()) {
+                        needRetry = true;
+                        break;
+                    }
+                }
+                if (!needRetry) {
+                    throw new FlinkCommonException(e);
+                }
+            }
+        }
+
+        private static void doSleep(int i,
+                                    int retryTimes,
+                                    long sleepTimeInMilliSecond,
+                                    boolean exponential,
+                                    Exception e) {
+            if (i + 1 < retryTimes && sleepTimeInMilliSecond > 0) {
+                long startTime = System.currentTimeMillis();
+                long timeToSleep;
+                if (exponential) {
+                    timeToSleep = sleepTimeInMilliSecond * (long) Math.pow(2, i);
+                } else {
+                    timeToSleep = sleepTimeInMilliSecond;
+                }
+                if (timeToSleep >= MAX_SLEEP_MILLISECOND) {
+                    timeToSleep = MAX_SLEEP_MILLISECOND;
+                }
+                try {
+                    Thread.sleep(timeToSleep);
+                } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
+                }
+                long realTimeSleep = System.currentTimeMillis() - startTime;
+                LOG.error("Exception when calling callable, " +
+                                "即将尝试执行第{}次重试." +
+                                "本次重试计划等待[{}]ms," +
+                                "实际等待[{}]ms, " +
+                                "异常Msg: [{}}]"
+                        , i + 1, timeToSleep, realTimeSleep, e.getMessage());
+            }
+        }
     }
+
 
     private static class AsyncRetry extends Retry {
 
-        private long timeoutMs;
-        private ThreadPoolExecutor executor;
+        private final long timeoutMs;
+        private final ThreadPoolExecutor executor;
 
         public AsyncRetry(long timeoutMs, ThreadPoolExecutor executor) {
             this.timeoutMs = timeoutMs;
@@ -204,16 +209,17 @@ public final class RetryUtil {
          * @param callable 实际逻辑
          * @param <T>      T
          * @return T
-         * @throws Exception Exception
          */
         @Override
-        protected <T> T call(Callable<T> callable) throws Exception {
+        protected <T> T call(Callable<T> callable) {
             Future<T> future = executor.submit(callable);
+            Throwable t;
             try {
                 return future.get(timeoutMs, TimeUnit.MILLISECONDS);
             } catch (Exception e) {
+                t = e;
                 LOG.warn("Try once failed", e);
-                throw e;
+                throw new FlinkCommonException("Try once failed", t);
             } finally {
                 if (!future.isDone()) {
                     future.cancel(true);

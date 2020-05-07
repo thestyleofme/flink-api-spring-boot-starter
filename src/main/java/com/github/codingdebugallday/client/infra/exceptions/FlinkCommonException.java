@@ -19,4 +19,8 @@ public class FlinkCommonException extends RuntimeException {
     public FlinkCommonException(String msg, Throwable throwable) {
         super(msg, throwable);
     }
+
+    public FlinkCommonException( Throwable throwable) {
+        super(throwable);
+    }
 }

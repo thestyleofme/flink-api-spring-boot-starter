@@ -2,9 +2,11 @@ package com.github.codingdebugallday.client.app.service.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.codingdebugallday.client.api.dto.ClusterDTO;
 import com.github.codingdebugallday.client.api.dto.NodeDTO;
@@ -81,8 +83,25 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, Cluster> impl
         // flinkApiContext还需remove掉
         flinkApiContext.remove(clusterDTO.getClusterCode());
         // 更新节点表
-        List<NodeDTO> nodeDTOList = genNodeList(clusterDTO).stream().map(node -> {
-            nodeMapper.updateById(node);
+        // 需要删除的节点
+        List<Long> existNodeList = selectByClusterCode(cluster.getClusterCode(), cluster.getTenantId()).stream()
+                .map(Node::getNodeId)
+                .collect(Collectors.toList());
+        List<Node> nodeList = genNodeList(clusterDTO);
+        List<Long> curNodeList = nodeList.stream()
+                .filter(node -> node.getNodeId() != null)
+                .map(Node::getNodeId)
+                .collect(Collectors.toList());
+        // 取差集 就是需要删除的节点
+        existNodeList.removeAll(curNodeList);
+        nodeMapper.deleteBatchIds(existNodeList);
+        //  需要新增和更新
+        List<NodeDTO> nodeDTOList = nodeList.stream().map(node -> {
+            if (Objects.isNull(node.getNodeId())) {
+                nodeMapper.insert(node);
+            } else {
+                nodeMapper.updateById(node);
+            }
             return NodeConvertMapper.INSTANCE.entityToDTO(nodeMapper.selectById(node.getNodeId()));
         }).collect(Collectors.toList());
         ClusterDTO dto = ClusterConvertMapper.INSTANCE.entityToDTO(cluster);
@@ -198,6 +217,13 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, Cluster> impl
             nodeDTO.setSettingInfo(JSON.toJson(nodeSettingInfo));
             return NodeConvertMapper.INSTANCE.dtoToEntity(nodeDTO);
         }).collect(Collectors.toList());
+    }
+
+    public List<Node> selectByClusterCode(String clusterCode, Long tenantId) {
+        QueryWrapper<Node> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(Node.FIELD_CLUSTER_CODE, clusterCode);
+        queryWrapper.eq(Node.FIELD_TENANT_ID, tenantId);
+        return nodeMapper.selectList(queryWrapper);
     }
 
 }
