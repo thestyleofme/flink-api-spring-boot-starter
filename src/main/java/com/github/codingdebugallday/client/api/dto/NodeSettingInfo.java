@@ -1,6 +1,7 @@
 package com.github.codingdebugallday.client.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 /**
@@ -26,5 +27,6 @@ public class NodeSettingInfo {
      * 是否需要修改该节点的密码
      */
     @Builder.Default
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Boolean changePassword = false;
 }
