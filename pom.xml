@@ -6,7 +6,7 @@
 
     <groupId>com.github.codingdebugallday</groupId>
     <artifactId>flink-api-spring-boot-starter</artifactId>
-    <version>1.0.1.RELEASE</version>
+    <version>1.0.2.RELEASE</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
