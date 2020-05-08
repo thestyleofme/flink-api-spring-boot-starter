@@ -21,4 +21,27 @@
         <result column="last_update_date" property="lastUpdateDate" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <resultMap id="BaseJarCommonResultMap" type="com.github.codingdebugallday.client.domain.entity.UploadJar">
+        <result column="upload_jar_id" property="uploadJarId" jdbcType="DECIMAL"/>
+        <result column="jar_desc" property="jarDesc" jdbcType="VARCHAR"/>
+        <result column="jar_code" property="jarCode" jdbcType="VARCHAR"/>
+        <result column="version" property="version" jdbcType="VARCHAR"/>
+        <result column="system_provided" property="systemProvided" jdbcType="DECIMAL"/>
+        <result column="entry_class" property="entryClass" jdbcType="VARCHAR"/>
+        <result column="filename" property="filename" jdbcType="VARCHAR"/>
+        <result column="jar_name" property="jarName" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Jar_Common_Column_List">
+        ${prefix}.jar_desc,
+        ${prefix}.jar_code,
+        ${prefix}.version,
+        ${prefix}.system_provided,
+        ${prefix}.entry_class,
+        ${prefix}.filename,
+        ${prefix}.jar_name,
+        ${prefix}.status
+    </sql>
+
 </mapper>

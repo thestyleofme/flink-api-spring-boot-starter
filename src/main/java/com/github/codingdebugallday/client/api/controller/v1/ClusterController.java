@@ -122,7 +122,7 @@ public class ClusterController {
         return clusterService.jobRescale(tenantId, clusterCode, jobId, parallelism);
     }
 
-    @GetMapping("job/{clusterCode}/rescale")
+    @GetMapping("job/{clusterCode}/exception")
     public JobExceptionsInfo jobException(@PathVariable Long tenantId,
                                           @PathVariable String clusterCode,
                                           String jobId,
