@@ -10,7 +10,7 @@
 <dependency>
     <groupId>com.github.codingdebugallday</groupId>
     <artifactId>flink-api-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2.RELEASE</version>
 </dependency>
 ```
 3. spring boot配置文件如示例，```src/main/resources/application.yml```
@@ -50,6 +50,8 @@
 4. 使用
 > 首先获取FlinkApiContext，然后通过clusterCode以及tenantId获取flinkApi, 
 >flinkApi即可调用api，如uploadJar/runJar/jobList等
+>
+> 会自动重试3次，如jm master挂了，会切换到备用节点进行访问
 
 ```java
 @Autowired

@@ -11,7 +11,7 @@
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 13/04/2020 09:12:22
+ Date: 08/05/2020 17:33:32
 */
 
 SET NAMES utf8mb4;
@@ -58,6 +58,55 @@ CREATE TABLE `flink_node`  (
   PRIMARY KEY (`node_id`) USING BTREE,
   UNIQUE INDEX `index_node_code_u1`(`node_code`, `tenant_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '流处理节点表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for flink_sql_job
+-- ----------------------------
+DROP TABLE IF EXISTS `flink_sql_job`;
+CREATE TABLE `flink_sql_job`  (
+  `job_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `job_code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'job唯一编码',
+  `cluster_code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `sql_upload_path` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'sql文件上传路径',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'sql内容',
+  `setting_info` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '执行sql任务的额外配置信息json格式',
+  `job_status` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '执行sql的状态',
+  `errors` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '执行sql任务的错误日志',
+  `flink_job_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '运行后flink返回的jobid',
+  `exec_jar_id` bigint(20) NULL DEFAULT NULL COMMENT '默认最新的flink sql jar也可指定flink sql jar，执行时异步更新',
+  `savepoint_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT 'savepoint path',
+  `tenant_id` bigint(20) NULL DEFAULT 0 COMMENT '租户ID',
+  `object_version_number` bigint(20) NOT NULL DEFAULT 1 COMMENT '版本号',
+  `creation_date` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `created_by` int(11) NOT NULL DEFAULT -1,
+  `last_updated_by` int(11) NOT NULL DEFAULT -1,
+  `last_update_date` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  PRIMARY KEY (`job_id`) USING BTREE,
+  UNIQUE INDEX `index_job_code_u1`(`job_code`, `tenant_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for flink_udf
+-- ----------------------------
+DROP TABLE IF EXISTS `flink_udf`;
+CREATE TABLE `flink_udf`  (
+  `udf_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `udf_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'udf名称',
+  `udf_desc` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT 'udf描述',
+  `udf_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'jar/code',
+  `udf_jar_path` varchar(127) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT 'udf jar上传路径',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT 'udf代码/jar包udf类名',
+  `cluster_code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'flink 集群编码',
+  `udf_status` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '由于异步，这个字段作为回调使用',
+  `tenant_id` bigint(20) NULL DEFAULT 0 COMMENT '租户ID',
+  `object_version_number` bigint(20) NOT NULL DEFAULT 1 COMMENT '版本号',
+  `creation_date` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `created_by` int(11) NOT NULL DEFAULT -1,
+  `last_updated_by` int(11) NOT NULL DEFAULT -1,
+  `last_update_date` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  PRIMARY KEY (`udf_id`) USING BTREE,
+  UNIQUE INDEX `index_udf_name_u1`(`udf_name`, `tenant_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for flink_upload_jar
