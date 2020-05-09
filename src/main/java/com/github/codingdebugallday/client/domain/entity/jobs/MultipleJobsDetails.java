@@ -2,6 +2,7 @@ package com.github.codingdebugallday.client.domain.entity.jobs;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -38,10 +39,13 @@ public class MultipleJobsDetails {
         private String jid;
         private String name;
         private String state;
-        private long starttime;
-        private int endtime;
+        @JsonAlias("start-time")
+        private long startTime;
+        @JsonAlias("end-time")
+        private int endTime;
         private int duration;
-        private long lastmodification;
+        @JsonAlias("last-modification")
+        private long lastModification;
         private Tasks tasks;
 
         @NoArgsConstructor
