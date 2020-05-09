@@ -31,7 +31,7 @@ public class FlinkCommonService {
     public <T> T getForEntity(RestTemplate restTemplate,
                               String url,
                               Class<T> responseType,
-                              Object... uriVariables) throws Exception {
+                              Object... uriVariables) {
         return RetryUtil.executeWithRetry(() -> {
             ResponseEntity<T> responseEntity = restTemplate.getForEntity(
                     url,
@@ -58,7 +58,7 @@ public class FlinkCommonService {
                           HttpMethod method,
                           @Nullable HttpEntity<?> requestEntity,
                           Class<T> responseType,
-                          Object... uriVariables) throws Exception {
+                          Object... uriVariables) {
         return RetryUtil.executeWithRetry(() -> {
             ResponseEntity<T> responseEntity = restTemplate.exchange(url, method,
                     requestEntity, responseType, uriVariables);

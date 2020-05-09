@@ -31,6 +31,16 @@ public final class FlinkApiConstant {
         public static final String RUN_JAR = "/v1/jars/{1}/run";
     }
 
+    public static final class Overview {
+        private Overview() {
+        }
+        /**
+         * flink overview url
+         */
+        public static final String CONFIG = "/v1/config";
+        public static final String OVERVIEW = "/v1/overview";
+    }
+
     public static final class Jobs {
         private Jobs() {
         }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.github.codingdebugallday.client.api.dto.ClusterDTO;
 import com.github.codingdebugallday.client.domain.entity.jobs.*;
+import com.github.codingdebugallday.client.domain.entity.overview.DashboardConfiguration;
 import com.github.codingdebugallday.client.domain.entity.tm.TaskManagerDetail;
 import com.github.codingdebugallday.client.domain.entity.tm.TaskManagerInfo;
 
@@ -40,6 +41,24 @@ public interface ClusterService {
      * @param clusterDTO ClusterDTO
      */
     void delete(ClusterDTO clusterDTO);
+
+    /**
+     * 查看web ui的粗略信息
+     *
+     * @param tenantId    租户id
+     * @param clusterCode clusterCode
+     * @return DashboardConfiguration
+     */
+    DashboardConfiguration overviewConfig(Long tenantId, String clusterCode);
+
+    /**
+     * 查看flink集群的粗略信息
+     *
+     * @param tenantId    租户id
+     * @param clusterCode clusterCode
+     * @return Map
+     */
+    Map<String, Object> overview(Long tenantId, String clusterCode);
 
     /**
      * 概览flink job列表

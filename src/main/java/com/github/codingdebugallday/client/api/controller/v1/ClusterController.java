@@ -11,6 +11,7 @@ import com.github.codingdebugallday.client.api.dto.ClusterDTO;
 import com.github.codingdebugallday.client.app.service.ClusterService;
 import com.github.codingdebugallday.client.domain.entity.Cluster;
 import com.github.codingdebugallday.client.domain.entity.jobs.*;
+import com.github.codingdebugallday.client.domain.entity.overview.DashboardConfiguration;
 import com.github.codingdebugallday.client.domain.entity.tm.TaskManagerDetail;
 import com.github.codingdebugallday.client.domain.entity.tm.TaskManagerInfo;
 import com.github.codingdebugallday.client.domain.repository.ClusterRepository;
@@ -71,6 +72,18 @@ public class ClusterController {
                        @RequestBody ClusterDTO clusterDTO) {
         clusterDTO.setTenantId(tenantId);
         clusterService.delete(clusterDTO);
+    }
+
+    @GetMapping("overview/{clusterCode}/config")
+    public DashboardConfiguration overviewConfig(@PathVariable Long tenantId,
+                                                 @PathVariable String clusterCode) {
+        return clusterService.overviewConfig(tenantId, clusterCode);
+    }
+
+    @GetMapping("overview/{clusterCode}")
+    public Map<String, Object> overview(@PathVariable Long tenantId,
+                                        @PathVariable String clusterCode) {
+        return clusterService.overview(tenantId, clusterCode);
     }
 
     @GetMapping("job/{clusterCode}/overview")

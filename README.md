@@ -20,29 +20,50 @@
 > method: post
 ```json
 {
-    "clusterCode": "hdsp-demo",
-    "clusterDesc": "hdsp-demo",
-    "jobManagerUrl": "http://hdsp003:50100",
+    "clusterCode": "hdspdev",
+    "clusterDesc": "hdspdev",
+    "jobManagerUrl": "http://hdspdev002:50100",
     "username": "root",
-    "password": "HandHdspo0!",
-    "jobManagerStandbyUrl": "http://hdsp002:50100",
+    "password": "m8rW2EQ0iDCcWlbH",
+    "jobManagerStandbyUrl": "http://hdspdev001:50100",
     "enabledFlag": 1,
     "tenantId": 0,
     "nodeDTOList": [
-        {
-            "nodeCode": "flink_hdsp001",
-            "nodeDesc": "hdsp001",
-            "settingInfo": "{\"host\":\"hdsp001\",\"username\":\"root\",\"password\":\"HandHdspo0!\"}"
+    	 {
+            "nodeCode": "flink_hdspdev001",
+            "nodeDesc": "hdspdev001",
+            "nodeType":"MARSTER",
+            "settingInfo": "{\"host\":\"hdspdev001\",\"username\":\"root\",\"password\":\"m8rW2EQ0iDCcWlbH\"}"
         },
         {
-            "nodeCode": "flink_hdsp002",
-            "nodeDesc": "hdsp002",
-            "settingInfo": "{\"host\":\"hdsp002\",\"username\":\"root\",\"password\":\"HandHdspo0!!\"}"
+            "nodeCode": "flink_hdspdev002",
+            "nodeDesc": "hdspdev002",
+            "nodeType":"SLAVE",
+            "settingInfo": "{\"host\":\"hdspdev002\",\"username\":\"root\",\"password\":\"m8rW2EQ0iDCcWlbH\"}"
         },
         {
-            "nodeCode": "flink_hdsp003",
-            "nodeDesc": "hdsp003",
-            "settingInfo": "{\"host\":\"hdsp003\",\"username\":\"root\",\"password\":\"HandHdspo0!!!\"}"
+            "nodeCode": "flink_hdspdev003",
+            "nodeDesc": "hdspdev003",
+            "nodeType":"SLAVE",
+            "settingInfo": "{\"host\":\"hdspdev003\",\"username\":\"root\",\"password\":\"m8rW2EQ0iDCcWlbH\"}"
+        },
+        {
+            "nodeCode": "flink_hdspdev004",
+            "nodeDesc": "hdspdev004",
+            "nodeType":"SLAVE",
+            "settingInfo": "{\"host\":\"hdspdev004\",\"username\":\"root\",\"password\":\"m8rW2EQ0iDCcWlbH\"}"
+        },
+        {
+            "nodeCode": "flink_hdspdev005",
+            "nodeDesc": "hdspdev005",
+            "nodeType":"SLAVE",
+            "settingInfo": "{\"host\":\"hdspdev005\",\"username\":\"root\",\"password\":\"m8rW2EQ0iDCcWlbH\"}"
+        },
+        {
+            "nodeCode": "flink_hdspdev006",
+            "nodeDesc": "hdspdev006",
+            "nodeType":"SLAVE",
+            "settingInfo": "{\"host\":\"hdspdev006\",\"username\":\"root\",\"password\":\"m8rW2EQ0iDCcWlbH\"}"
         }
     ]
 }

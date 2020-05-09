@@ -7,11 +7,13 @@ import java.util.Map;
 import com.github.codingdebugallday.client.app.service.jars.FlinkJarService;
 import com.github.codingdebugallday.client.app.service.jm.FlinkJobManagerService;
 import com.github.codingdebugallday.client.app.service.jobs.FlinkJobService;
+import com.github.codingdebugallday.client.app.service.overview.ClusterOverviewService;
 import com.github.codingdebugallday.client.app.service.tm.FlinkTaskManagerService;
 import com.github.codingdebugallday.client.domain.entity.jars.JarRunRequest;
 import com.github.codingdebugallday.client.domain.entity.jars.JarRunResponseBody;
 import com.github.codingdebugallday.client.domain.entity.jars.JarUploadResponseBody;
 import com.github.codingdebugallday.client.domain.entity.jobs.*;
+import com.github.codingdebugallday.client.domain.entity.overview.DashboardConfiguration;
 import com.github.codingdebugallday.client.domain.entity.tm.TaskManagerDetail;
 import com.github.codingdebugallday.client.domain.entity.tm.TaskManagerInfo;
 import org.springframework.web.client.RestTemplate;
@@ -26,7 +28,7 @@ import org.springframework.web.client.RestTemplate;
  */
 public class FlinkApi {
 
-    private ApiClient apiClient;
+    private final ApiClient apiClient;
     /**
      * flink jar 相关 api
      */
@@ -34,6 +36,7 @@ public class FlinkApi {
     private final FlinkJobService flinkJobService;
     private final FlinkTaskManagerService flinkTaskManagerService;
     private final FlinkJobManagerService flinkJobManagerService;
+    private final ClusterOverviewService clusterOverviewService;
 
     public FlinkApi(RestTemplate restTemplate) {
         this.apiClient = new ApiClient();
@@ -41,10 +44,34 @@ public class FlinkApi {
         flinkJobService = new FlinkJobService(restTemplate);
         flinkTaskManagerService = new FlinkTaskManagerService(restTemplate);
         flinkJobManagerService = new FlinkJobManagerService(restTemplate);
+        clusterOverviewService = new ClusterOverviewService(restTemplate);
     }
 
     public ApiClient getApiClient() {
         return apiClient;
+    }
+
+    //========================================================
+    //===================flink overview api===================
+    //========================================================
+    //========================================================
+
+    /**
+     * Returns the configuration of the WebUI
+     *
+     * @return DashboardConfiguration
+     */
+    public DashboardConfiguration overviewConfig() {
+        return clusterOverviewService.overviewConfig(apiClient);
+    }
+
+    /**
+     * Returns the Flink cluster Overview Info
+     *
+     * @return Map
+     */
+    public Map<String, Object> overview() {
+        return clusterOverviewService.overview(apiClient);
     }
 
     //========================================================
@@ -196,15 +223,15 @@ public class FlinkApi {
     //========================================================
     //========================================================
 
-    public List<Map<String,String>> jobManagerConfig() {
+    public List<Map<String, String>> jobManagerConfig() {
         return flinkJobManagerService.jobManagerConfig(apiClient);
     }
 
-    public String jobManagerLog(){
+    public String jobManagerLog() {
         return flinkJobManagerService.jobManagerLog(apiClient);
     }
 
-    public String jobManagerStdout(){
+    public String jobManagerStdout() {
         return flinkJobManagerService.jobManagerStdout(apiClient);
     }
 }

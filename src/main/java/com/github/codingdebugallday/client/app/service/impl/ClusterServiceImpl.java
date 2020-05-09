@@ -16,6 +16,7 @@ import com.github.codingdebugallday.client.app.service.FlinkApi;
 import com.github.codingdebugallday.client.domain.entity.Cluster;
 import com.github.codingdebugallday.client.domain.entity.Node;
 import com.github.codingdebugallday.client.domain.entity.jobs.*;
+import com.github.codingdebugallday.client.domain.entity.overview.DashboardConfiguration;
 import com.github.codingdebugallday.client.domain.entity.tm.TaskManagerDetail;
 import com.github.codingdebugallday.client.domain.entity.tm.TaskManagerInfo;
 import com.github.codingdebugallday.client.domain.repository.ClusterRepository;
@@ -118,6 +119,18 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, Cluster> impl
     }
 
     @Override
+    public DashboardConfiguration overviewConfig(Long tenantId, String clusterCode) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.overviewConfig();
+    }
+
+    @Override
+    public Map<String, Object> overview(Long tenantId, String clusterCode) {
+        FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
+        return flinkApi.overview();
+    }
+
+    @Override
     public JobIdsWithStatusOverview jobList(Long tenantId, String clusterCode) {
         FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
         return flinkApi.jobList();
@@ -215,7 +228,7 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, Cluster> impl
             NodeSettingInfo nodeSettingInfo = JSON.toObj(nodeDTO.getSettingInfo(), NodeSettingInfo.class);
             // 第一次新增时对密码进行加密 或者 该节点需要对密码进行更新
             if (Objects.isNull(nodeDTO.getNodeId()) ||
-                    nodeSettingInfo.getChangePassword()) {
+                    Boolean.TRUE.equals(nodeSettingInfo.getChangePassword())) {
                 nodeSettingInfo.setPassword(jasyptStringEncryptor.encrypt(nodeSettingInfo.getPassword()));
             }
             nodeDTO.setSettingInfo(JSON.toJson(nodeSettingInfo));
