@@ -41,14 +41,14 @@ public class JobDetailsInfo {
     private boolean isStoppable;
     private String state;
     @JsonAlias("start-time")
-    private long starttime;
+    private long startTime;
     @JsonAlias("end-time")
-    private int endtime;
+    private int endTime;
     private int duration;
     private long now;
     private TimestampsBean timestamps;
     @JsonAlias("status-counts")
-    private StatuscountsBean statuscounts;
+    private StatusCountsBean statusCounts;
     private PlanBean plan;
     private List<VerticesBean> vertices;
 
@@ -92,7 +92,7 @@ public class JobDetailsInfo {
 
     @NoArgsConstructor
     @Data
-    public static class StatuscountsBean {
+    public static class StatusCountsBean {
         /**
          * CANCELING : 0
          * CREATED : 0
@@ -204,8 +204,10 @@ public class JobDetailsInfo {
         private String name;
         private int parallelism;
         private String status;
-        private long starttime;
-        private int endtime;
+        @JsonAlias("start-time")
+        private long startTime;
+        @JsonAlias("end-time")
+        private int endTime;
         private int duration;
         private TasksBean tasks;
         private MetricsBean metrics;
@@ -260,21 +262,21 @@ public class JobDetailsInfo {
              */
 
             @JsonAlias("read-bytes")
-            private int readbytes;
+            private int readBytes;
             @JsonAlias("read-bytes-complete")
-            private boolean readbytescomplete;
+            private boolean readBytesComplete;
             @JsonAlias("write-bytes")
-            private int writebytes;
+            private int writeBytes;
             @JsonAlias("write-bytes-complete")
-            private boolean writebytescomplete;
+            private boolean writeBytesComplete;
             @JsonAlias("read-records")
-            private int readrecords;
+            private int readRecords;
             @JsonAlias("read-records-complete")
-            private boolean readrecordscomplete;
+            private boolean readRecordsComplete;
             @JsonAlias("write-records")
-            private int writerecords;
+            private int writeRecords;
             @JsonAlias("write-records-complete")
-            private boolean writerecordscomplete;
+            private boolean writeRecordsComplete;
         }
     }
 }
