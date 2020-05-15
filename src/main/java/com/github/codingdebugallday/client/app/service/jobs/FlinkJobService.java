@@ -127,7 +127,7 @@ public class FlinkJobService extends FlinkCommonService {
             triggerResponse = exchange(restTemplate,
                     clusterDTO.getJobManagerUrl() + FlinkApiConstant.Jobs.JOB_CANCEL_WITH_SAVEPOINTS,
                     HttpMethod.POST, requestEntity, TriggerResponse.class, savepointTriggerRequestBody.getJobId());
-            if (!CollectionUtils.isEmpty(triggerResponse.getErrors())) {
+            if (CollectionUtils.isEmpty(triggerResponse.getErrors())) {
                 savepointInfo = getForEntity(restTemplate,
                         clusterDTO.getJobManagerUrl() + FlinkApiConstant.Jobs.JOB_SAVEPOINT_STATUS,
                         SavepointInfo.class,
@@ -143,7 +143,7 @@ public class FlinkJobService extends FlinkCommonService {
                     triggerResponse = exchange(restTemplate,
                             url + FlinkApiConstant.Jobs.JOB_CANCEL_WITH_SAVEPOINTS,
                             HttpMethod.POST, requestEntity, TriggerResponse.class, savepointTriggerRequestBody.getJobId());
-                    if (!CollectionUtils.isEmpty(triggerResponse.getErrors())) {
+                    if (CollectionUtils.isEmpty(triggerResponse.getErrors())) {
                         savepointInfo = getForEntity(restTemplate,
                                 url + FlinkApiConstant.Jobs.JOB_SAVEPOINT_STATUS,
                                 SavepointInfo.class,
