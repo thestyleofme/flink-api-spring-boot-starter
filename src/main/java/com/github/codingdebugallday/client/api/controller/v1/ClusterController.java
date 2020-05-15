@@ -113,7 +113,7 @@ public class ClusterController {
     }
 
     @PostMapping("job/{clusterCode}/cancel-savepoint")
-    public TriggerResponse jobCancelOptionSavepoints(@PathVariable Long tenantId,
+    public TriggerResponseWithSavepoint jobCancelOptionSavepoints(@PathVariable Long tenantId,
                                                      @PathVariable String clusterCode,
                                                      @RequestBody SavepointTriggerRequestBody savepointTriggerRequestBody) {
         return clusterService.jobCancelOptionSavepoints(tenantId, clusterCode, savepointTriggerRequestBody);

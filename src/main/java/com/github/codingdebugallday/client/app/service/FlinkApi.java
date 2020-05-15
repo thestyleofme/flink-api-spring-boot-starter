@@ -155,9 +155,9 @@ public class FlinkApi {
      * This async operation would return a 'triggerid' for further query identifier.
      *
      * @param savepointTriggerRequestBody SavepointTriggerRequestBody
-     * @return TriggerResponse TriggerResponse
+     * @return TriggerResponseWithSavepoint
      */
-    public TriggerResponse jobCancelOptionSavepoints(SavepointTriggerRequestBody savepointTriggerRequestBody) {
+    public TriggerResponseWithSavepoint jobCancelOptionSavepoints(SavepointTriggerRequestBody savepointTriggerRequestBody) {
         return flinkJobService.jobCancelOptionSavepoints(savepointTriggerRequestBody, apiClient);
     }
 

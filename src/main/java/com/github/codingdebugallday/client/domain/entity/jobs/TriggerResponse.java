@@ -2,6 +2,8 @@ package com.github.codingdebugallday.client.domain.entity.jobs;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +17,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TriggerResponse {
 
     private List<String> errors;
@@ -22,6 +25,6 @@ public class TriggerResponse {
     /**
      * request-id : 09378564653658d04a3a21766d6054ff
      */
-
-    private String requestid;
+    @JsonAlias("request-id")
+    private String requestId;
 }

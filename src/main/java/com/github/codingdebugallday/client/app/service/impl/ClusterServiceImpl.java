@@ -161,7 +161,7 @@ public class ClusterServiceImpl extends ServiceImpl<ClusterMapper, Cluster> impl
     }
 
     @Override
-    public TriggerResponse jobCancelOptionSavepoints(Long tenantId, String clusterCode,
+    public TriggerResponseWithSavepoint jobCancelOptionSavepoints(Long tenantId, String clusterCode,
                                                      SavepointTriggerRequestBody savepointTriggerRequestBody) {
         FlinkApi flinkApi = flinkApiContext.get(clusterCode, tenantId);
         return flinkApi.jobCancelOptionSavepoints(savepointTriggerRequestBody);

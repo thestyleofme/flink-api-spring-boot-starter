@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -116,20 +117,42 @@ public class FlinkJobService extends FlinkCommonService {
         }
     }
 
-    public TriggerResponse jobCancelOptionSavepoints(SavepointTriggerRequestBody savepointTriggerRequestBody, ApiClient apiClient) {
+    public TriggerResponseWithSavepoint jobCancelOptionSavepoints(SavepointTriggerRequestBody savepointTriggerRequestBody, ApiClient apiClient) {
         HttpEntity<String> requestEntity =
                 new HttpEntity<>((JSON.toJson(savepointTriggerRequestBody)), RestTemplateUtil.applicationJsonHeaders());
         ClusterDTO clusterDTO = apiClient.getClusterDTO();
+        SavepointInfo savepointInfo = null;
+        TriggerResponse triggerResponse;
         try {
-            return exchange(restTemplate,
+            triggerResponse = exchange(restTemplate,
                     clusterDTO.getJobManagerUrl() + FlinkApiConstant.Jobs.JOB_CANCEL_WITH_SAVEPOINTS,
                     HttpMethod.POST, requestEntity, TriggerResponse.class, savepointTriggerRequestBody.getJobId());
+            if (!CollectionUtils.isEmpty(triggerResponse.getErrors())) {
+                savepointInfo = getForEntity(restTemplate,
+                        clusterDTO.getJobManagerUrl() + FlinkApiConstant.Jobs.JOB_SAVEPOINT_STATUS,
+                        SavepointInfo.class,
+                        savepointTriggerRequestBody.getJobId(),
+                        triggerResponse.getRequestId());
+            }
+            return TriggerResponseWithSavepoint.builder()
+                    .savepointInfo(savepointInfo)
+                    .triggerResponse(triggerResponse).build();
         } catch (Exception e) {
             for (String url : clusterDTO.getJobManagerStandbyUrlSet()) {
                 try {
-                    return exchange(restTemplate,
+                    triggerResponse = exchange(restTemplate,
                             url + FlinkApiConstant.Jobs.JOB_CANCEL_WITH_SAVEPOINTS,
                             HttpMethod.POST, requestEntity, TriggerResponse.class, savepointTriggerRequestBody.getJobId());
+                    if (!CollectionUtils.isEmpty(triggerResponse.getErrors())) {
+                        savepointInfo = getForEntity(restTemplate,
+                                url + FlinkApiConstant.Jobs.JOB_SAVEPOINT_STATUS,
+                                SavepointInfo.class,
+                                savepointTriggerRequestBody.getJobId(),
+                                triggerResponse.getRequestId());
+                    }
+                    return TriggerResponseWithSavepoint.builder()
+                            .savepointInfo(savepointInfo)
+                            .triggerResponse(triggerResponse).build();
                 } catch (Exception ex) {
                     // ignore
                 }

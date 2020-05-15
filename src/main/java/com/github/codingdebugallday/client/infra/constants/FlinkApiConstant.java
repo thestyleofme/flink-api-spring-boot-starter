@@ -52,6 +52,7 @@ public final class FlinkApiConstant {
         public static final String JOB_DETAIL = "/v1/jobs/{1}";
         public static final String JOB_YARN_CANCEL = "/v1/jobs/{1}/yarn-cancel";
         public static final String JOB_CANCEL_WITH_SAVEPOINTS = "/v1/jobs/{1}/savepoints";
+        public static final String JOB_SAVEPOINT_STATUS = "/v1/jobs/{1}/savepoints/{2}";
         public static final String JOB_TERMINATE  = "/v1/jobs/{1}?mode={2}";
         public static final String JOB_RESCALING = "/v1/jobs/{1}/rescaling?parallelism={2}";
         public static final String JOB_EXCEPTIONS = "/v1/jobs/{1}/exceptions";

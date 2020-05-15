@@ -1,5 +1,6 @@
 package com.github.codingdebugallday.client.domain.entity.jobs;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -20,8 +21,10 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SavepointTriggerRequestBody {
 
+    @JsonAlias({"targetDirectory"})
     @JsonProperty("target-directory")
     private String targetDirectory;
+    @JsonAlias({"cancelJob"})
     @JsonProperty("cancel-job")
     @Builder.Default
     private Boolean cancelJob = false;

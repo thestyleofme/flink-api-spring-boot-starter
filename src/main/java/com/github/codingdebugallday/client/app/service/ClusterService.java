@@ -115,9 +115,9 @@ public interface ClusterService {
      * @param tenantId                    租户id
      * @param clusterCode                 clusterCode
      * @param savepointTriggerRequestBody SavepointTriggerRequestBody
-     * @return TriggerResponse
+     * @return TriggerResponseWithSavepoint
      */
-    TriggerResponse jobCancelOptionSavepoints(Long tenantId, String clusterCode,
+    TriggerResponseWithSavepoint jobCancelOptionSavepoints(Long tenantId, String clusterCode,
                                               SavepointTriggerRequestBody savepointTriggerRequestBody);
 
     /**
