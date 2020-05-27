@@ -1,8 +1,7 @@
 package com.github.codingdebugallday.client.app.service.jobs;
 
-import java.time.Duration;
 import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.concurrent.TimeUnit;
 
 import com.github.codingdebugallday.client.api.dto.ClusterDTO;
 import com.github.codingdebugallday.client.app.service.ApiClient;
@@ -21,11 +20,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import reactor.retry.Backoff;
-import reactor.retry.Repeat;
-import reactor.retry.RepeatContext;
 
 /**
  * <p>
@@ -126,7 +120,8 @@ public class FlinkJobService extends FlinkCommonService {
         }
     }
 
-    public TriggerResponseWithSavepoint jobCancelOptionSavepoints(SavepointTriggerRequestBody savepointTriggerRequestBody, ApiClient apiClient) {
+    public TriggerResponseWithSavepoint jobCancelOptionSavepoints(SavepointTriggerRequestBody savepointTriggerRequestBody,
+                                                                  ApiClient apiClient) {
         HttpEntity<String> requestEntity =
                 new HttpEntity<>((JSON.toJson(savepointTriggerRequestBody)), RestTemplateUtil.applicationJsonHeaders());
         ClusterDTO clusterDTO = apiClient.getClusterDTO();
@@ -138,25 +133,9 @@ public class FlinkJobService extends FlinkCommonService {
                     HttpMethod.POST, requestEntity, TriggerResponse.class, savepointTriggerRequestBody.getJobId());
             if (CollectionUtils.isEmpty(triggerResponse.getErrors())) {
                 // 返回状态必须是COMPLETED才结束，否则重试
-                Predicate<RepeatContext<SavepointInfo>> repeatPredicate = savepointInfoRepeatContext -> {
-                    SavepointInfo context = savepointInfoRepeatContext.applicationContext();
-                    String currentStatus = context.getStatus().getId();
-                    log.info("currentStatus: {}", currentStatus);
-                    return !STATUS_COMPLETED.equals(currentStatus);
-                };
-                Mono<SavepointInfo> savepointInfoMono = WebClient.create()
-                        .get()
-                        .uri(clusterDTO.getJobManagerUrl() + FlinkApiConstant.Jobs.JOB_SAVEPOINT_STATUS,
-                                savepointTriggerRequestBody.getJobId(),
-                                triggerResponse.getRequestId())
-                        .retrieve()
-                        .bodyToMono(SavepointInfo.class);
-                savepointInfo = savepointInfoMono
-                        .repeatWhen(Repeat.onlyIf(repeatPredicate)
-                                .backoff(Backoff.fixed(Duration.ofMillis(500L)))
-                                .repeatMax(3)
-                                .withApplicationContext(savepointInfoMono.block()))
-                        .blockLast();
+                savepointInfo = fetchSavepoint(
+                        clusterDTO.getJobManagerUrl() + FlinkApiConstant.Jobs.JOB_SAVEPOINT_STATUS,
+                        savepointTriggerRequestBody, triggerResponse);
             }
             return TriggerResponseWithSavepoint.builder()
                     .savepointInfo(savepointInfo)
@@ -168,11 +147,10 @@ public class FlinkJobService extends FlinkCommonService {
                             url + FlinkApiConstant.Jobs.JOB_CANCEL_WITH_SAVEPOINTS,
                             HttpMethod.POST, requestEntity, TriggerResponse.class, savepointTriggerRequestBody.getJobId());
                     if (CollectionUtils.isEmpty(triggerResponse.getErrors())) {
-                        savepointInfo = getForEntity(restTemplate,
+                        // 返回状态必须是COMPLETED才结束，否则重试
+                        savepointInfo = fetchSavepoint(
                                 url + FlinkApiConstant.Jobs.JOB_SAVEPOINT_STATUS,
-                                SavepointInfo.class,
-                                savepointTriggerRequestBody.getJobId(),
-                                triggerResponse.getRequestId());
+                                savepointTriggerRequestBody, triggerResponse);
                     }
                     return TriggerResponseWithSavepoint.builder()
                             .savepointInfo(savepointInfo)
@@ -183,6 +161,28 @@ public class FlinkJobService extends FlinkCommonService {
             }
             throw new FlinkApiCommonException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error.flink.jar.cancel.option.savepoint");
         }
+    }
+
+    private SavepointInfo fetchSavepoint(String uri,
+                                         SavepointTriggerRequestBody savepointTriggerRequestBody,
+                                         TriggerResponse triggerResponse) {
+        SavepointInfo savepointInfo = getForEntity(restTemplate,
+                uri,
+                SavepointInfo.class,
+                savepointTriggerRequestBody.getJobId(),
+                triggerResponse.getRequestId());
+        // 返回状态必须是COMPLETED才结束，否则重试
+        while (savepointInfo != null &&
+                !STATUS_COMPLETED.equals(savepointInfo.getStatus().getId())) {
+            // delay一下 防止请求过多
+            try {
+                TimeUnit.MILLISECONDS.sleep(100L);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            savepointInfo = fetchSavepoint(uri, savepointTriggerRequestBody, triggerResponse);
+        }
+        return savepointInfo;
     }
 
     public FlinkApiErrorResponse jobTerminate(String jobId, String mode, ApiClient apiClient) {
