@@ -54,13 +54,13 @@ public class ClusterOverviewService extends FlinkCommonService {
         ClusterDTO clusterDTO = apiClient.getClusterDTO();
         try {
             return getForEntity(restTemplate,
-                    clusterDTO.getJobManagerUrl() + FlinkApiConstant.Overview.OVERVIEW,
+                    clusterDTO.getJobManagerUrl() + FlinkApiConstant.Overview.VIEW,
                     Map.class);
         } catch (Exception e) {
             for (String url : clusterDTO.getJobManagerStandbyUrlSet()) {
                 try {
                     return getForEntity(restTemplate,
-                            url + FlinkApiConstant.Overview.OVERVIEW,
+                            url + FlinkApiConstant.Overview.VIEW,
                             Map.class);
                 } catch (Exception ex) {
                     // ignore

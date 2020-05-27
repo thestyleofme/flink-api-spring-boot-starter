@@ -74,52 +74,52 @@ public class ClusterController {
         clusterService.delete(clusterDTO);
     }
 
-    @GetMapping("overview/{clusterCode}/config")
+    @GetMapping("/overview/{clusterCode}/config")
     public DashboardConfiguration overviewConfig(@PathVariable Long tenantId,
                                                  @PathVariable String clusterCode) {
         return clusterService.overviewConfig(tenantId, clusterCode);
     }
 
-    @GetMapping("overview/{clusterCode}")
+    @GetMapping("/overview/{clusterCode}")
     public Map<String, Object> overview(@PathVariable Long tenantId,
                                         @PathVariable String clusterCode) {
         return clusterService.overview(tenantId, clusterCode);
     }
 
-    @GetMapping("job/{clusterCode}/overview")
+    @GetMapping("/job/{clusterCode}/overview")
     public JobIdsWithStatusOverview jobList(@PathVariable Long tenantId,
                                             @PathVariable String clusterCode) {
         return clusterService.jobList(tenantId, clusterCode);
     }
 
-    @GetMapping("job/{clusterCode}/details")
+    @GetMapping("/job/{clusterCode}/details")
     public MultipleJobsDetails jobsDetails(@PathVariable Long tenantId,
                                            @PathVariable String clusterCode) {
         return clusterService.jobsDetails(tenantId, clusterCode);
     }
 
-    @GetMapping("job/{clusterCode}/detail")
+    @GetMapping("/job/{clusterCode}/detail")
     public JobDetailsInfo jobDetail(@PathVariable Long tenantId,
                                     @PathVariable String clusterCode,
                                     String jobId) {
         return clusterService.jobDetail(tenantId, clusterCode, jobId);
     }
 
-    @GetMapping("job/{clusterCode}/yarn-cancel")
+    @GetMapping("/job/{clusterCode}/yarn-cancel")
     public FlinkApiErrorResponse jobYarnCancel(@PathVariable Long tenantId,
                                                @PathVariable String clusterCode,
                                                String jobId) {
         return clusterService.jobYarnCancel(tenantId, clusterCode, jobId);
     }
 
-    @PostMapping("job/{clusterCode}/cancel-savepoint")
+    @PostMapping("/job/{clusterCode}/cancel-savepoint")
     public TriggerResponseWithSavepoint jobCancelOptionSavepoints(@PathVariable Long tenantId,
-                                                     @PathVariable String clusterCode,
-                                                     @RequestBody SavepointTriggerRequestBody savepointTriggerRequestBody) {
+                                                                  @PathVariable String clusterCode,
+                                                                  @RequestBody SavepointTriggerRequestBody savepointTriggerRequestBody) {
         return clusterService.jobCancelOptionSavepoints(tenantId, clusterCode, savepointTriggerRequestBody);
     }
 
-    @GetMapping("job/{clusterCode}/terminate")
+    @GetMapping("/job/{clusterCode}/terminate")
     public FlinkApiErrorResponse jobTerminate(@PathVariable Long tenantId,
                                               @PathVariable String clusterCode,
                                               String jobId,
@@ -127,7 +127,7 @@ public class ClusterController {
         return clusterService.jobTerminate(tenantId, clusterCode, jobId, mode);
     }
 
-    @GetMapping("job/{clusterCode}/rescale")
+    @GetMapping("/job/{clusterCode}/rescale")
     public TriggerResponse jobRescale(@PathVariable Long tenantId,
                                       @PathVariable String clusterCode,
                                       String jobId,
@@ -135,7 +135,7 @@ public class ClusterController {
         return clusterService.jobRescale(tenantId, clusterCode, jobId, parallelism);
     }
 
-    @GetMapping("job/{clusterCode}/exception")
+    @GetMapping("/job/{clusterCode}/exception")
     public JobExceptionsInfo jobException(@PathVariable Long tenantId,
                                           @PathVariable String clusterCode,
                                           String jobId,
@@ -143,46 +143,46 @@ public class ClusterController {
         return clusterService.jobException(tenantId, clusterCode, jobId, maxExceptions);
     }
 
-    @GetMapping("tm-list/{clusterCode}")
+    @GetMapping("/tm-list/{clusterCode}")
     public TaskManagerInfo taskMangerList(@PathVariable Long tenantId,
                                           @PathVariable String clusterCode) {
         return clusterService.taskMangerList(tenantId, clusterCode);
     }
 
-    @GetMapping("tm-list/{clusterCode}/detail")
+    @GetMapping("/tm-list/{clusterCode}/detail")
     public TaskManagerDetail taskManagerDetail(@PathVariable Long tenantId,
                                                @PathVariable String clusterCode,
                                                String tmId) {
         return clusterService.taskManagerDetail(tenantId, clusterCode, tmId);
     }
 
-    @GetMapping("tm-list/{clusterCode}/log")
+    @GetMapping("/tm-list/{clusterCode}/log")
     public String taskManagerLog(@PathVariable Long tenantId,
                                  @PathVariable String clusterCode,
                                  String tmId) {
         return clusterService.taskManagerLog(tenantId, clusterCode, tmId);
     }
 
-    @GetMapping("tm-list/{clusterCode}/stdout")
+    @GetMapping("/tm-list/{clusterCode}/stdout")
     public String taskManagerStdout(@PathVariable Long tenantId,
                                     @PathVariable String clusterCode,
                                     String tmId) {
         return clusterService.taskManagerStdout(tenantId, clusterCode, tmId);
     }
 
-    @GetMapping("jm/{clusterCode}/config")
+    @GetMapping("/jm/{clusterCode}/config")
     public List<Map<String, String>> jobManagerConfig(@PathVariable Long tenantId,
                                                       @PathVariable String clusterCode) {
         return clusterService.jobManagerConfig(tenantId, clusterCode);
     }
 
-    @GetMapping("jm/{clusterCode}/log")
+    @GetMapping("/jm/{clusterCode}/log")
     public String jobManagerLog(@PathVariable Long tenantId,
                                 @PathVariable String clusterCode) {
         return clusterService.jobManagerLog(tenantId, clusterCode);
     }
 
-    @GetMapping("jm/{clusterCode}/stdout")
+    @GetMapping("/jm/{clusterCode}/stdout")
     public String jobManagerStdout(@PathVariable Long tenantId,
                                    @PathVariable String clusterCode) {
         return clusterService.jobManagerStdout(tenantId, clusterCode);

@@ -42,7 +42,8 @@
     <scm>
         <url>https://github.com/codingdebugallday/flink-api-spring-boot-starter</url>
         <connection>https://github.com/codingdebugallday/flink-api-spring-boot-starter.git</connection>
-        <developerConnection>https://github.com/codingdebugallday/flink-api-spring-boot-starter.git</developerConnection>
+        <developerConnection>https://github.com/codingdebugallday/flink-api-spring-boot-starter.git
+        </developerConnection>
     </scm>
 
     <developers>
@@ -69,6 +70,14 @@
             <optional>true</optional>
         </dependency>
         <!--spring boot-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor.addons</groupId>
+            <artifactId>reactor-extra</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
             <artifactId>jasypt-spring-boot-starter</artifactId>

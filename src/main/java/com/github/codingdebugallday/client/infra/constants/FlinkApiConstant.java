@@ -38,7 +38,7 @@ public final class FlinkApiConstant {
          * flink overview url
          */
         public static final String CONFIG = "/v1/config";
-        public static final String OVERVIEW = "/v1/overview";
+        public static final String VIEW = "/v1/overview";
     }
 
     public static final class Jobs {
