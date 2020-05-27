@@ -2,6 +2,7 @@ package com.github.codingdebugallday.client.app.service.jobs;
 
 import java.time.Duration;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import com.github.codingdebugallday.client.api.dto.ClusterDTO;
 import com.github.codingdebugallday.client.app.service.ApiClient;
@@ -21,6 +22,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.retry.Backoff;
+import reactor.retry.Repeat;
+import reactor.retry.RepeatContext;
 
 /**
  * <p>
@@ -133,11 +138,25 @@ public class FlinkJobService extends FlinkCommonService {
                     HttpMethod.POST, requestEntity, TriggerResponse.class, savepointTriggerRequestBody.getJobId());
             if (CollectionUtils.isEmpty(triggerResponse.getErrors())) {
                 // 返回状态必须是COMPLETED才结束，否则重试
-                savepointInfo = fetchSavepoint(clusterDTO,savepointTriggerRequestBody,triggerResponse);
-                while (savepointInfo != null &&
-                        !STATUS_COMPLETED.equals(savepointInfo.getStatus().getId())) {
-                    savepointInfo = fetchSavepoint(clusterDTO,savepointTriggerRequestBody,triggerResponse);
-                }
+                Predicate<RepeatContext<SavepointInfo>> repeatPredicate = savepointInfoRepeatContext -> {
+                    SavepointInfo context = savepointInfoRepeatContext.applicationContext();
+                    String currentStatus = context.getStatus().getId();
+                    log.info("currentStatus: {}", currentStatus);
+                    return !STATUS_COMPLETED.equals(currentStatus);
+                };
+                Mono<SavepointInfo> savepointInfoMono = WebClient.create()
+                        .get()
+                        .uri(clusterDTO.getJobManagerUrl() + FlinkApiConstant.Jobs.JOB_SAVEPOINT_STATUS,
+                                savepointTriggerRequestBody.getJobId(),
+                                triggerResponse.getRequestId())
+                        .retrieve()
+                        .bodyToMono(SavepointInfo.class);
+                savepointInfo = savepointInfoMono
+                        .repeatWhen(Repeat.onlyIf(repeatPredicate)
+                                .backoff(Backoff.fixed(Duration.ofMillis(500L)))
+                                .repeatMax(3)
+                                .withApplicationContext(savepointInfoMono.block()))
+                        .blockLast();
             }
             return TriggerResponseWithSavepoint.builder()
                     .savepointInfo(savepointInfo)
@@ -164,19 +183,6 @@ public class FlinkJobService extends FlinkCommonService {
             }
             throw new FlinkApiCommonException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error.flink.jar.cancel.option.savepoint");
         }
-    }
-
-    private SavepointInfo fetchSavepoint(ClusterDTO clusterDTO,
-                                         SavepointTriggerRequestBody savepointTriggerRequestBody,
-                                         TriggerResponse triggerResponse){
-        return WebClient.create()
-                .get()
-                .uri(clusterDTO.getJobManagerUrl() + FlinkApiConstant.Jobs.JOB_SAVEPOINT_STATUS,
-                        savepointTriggerRequestBody.getJobId(),
-                        triggerResponse.getRequestId())
-                .retrieve()
-                .bodyToMono(SavepointInfo.class)
-                .block(Duration.ofSeconds(2));
     }
 
     public FlinkApiErrorResponse jobTerminate(String jobId, String mode, ApiClient apiClient) {
